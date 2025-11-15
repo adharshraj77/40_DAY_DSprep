@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Metadata from layout.tsx -->
+    <title>40-Day Data Science Interview Prep</title>
+    <meta name="description" content="Comprehensive interview preparation with AI coaching, structured curriculum, and daily progress tracking">
+    
+    <!-- Favicon (using lucide as a placeholder) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Vanta.js Dependencies (Three.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <!-- Vanta.js Effects (will be loaded by JS) -->
+    <!-- We'll load these dynamically to match the React logic -->
+
+    <!-- Fonts (Geist) -->
+    <style>
+        @import url('https://assets.vercel.com/font/geist/font-sans.css');
+        @import url('https://assets.vercel.com/font/geist/font-mono.css');
+
+        body {
+            font-family: 'Geist', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom Animations from React component */
+        @keyframes blossom-fall {
+          0% {
+            transform: translateY(0) translateX(0) rotate(0deg);
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(100vh) translateX(100px) rotate(360deg);
+            opacity: 0;
+          }
+        }
+        .animate-blossom-fall {
+          animation: blossom-fall linear forwards;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.6s ease-in-out forwards;
+        }
+        .animate-scale-in {
+          animation: scaleIn 0.4s ease-out forwards;
+        }
+        .animate-float {
+          animation: float 8s ease-in-out infinite;
+        }
+        .animate-float-delay {
+          animation: float 10s ease-in-out infinite 2s;
+        }
+        .animate-float-slow {
+          animation: float 12s ease-in-out infinite 4s;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+
+        /* Helper for hiding/showing elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Custom styles for code blocks in coach */
+        .coach-code-block {
+            background-color: #f7f3fa; /* Light purple-white */
+            border: 1px solid #e9d5ff; /* Purple border */
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Geist Mono', monospace;
+            color: #4b0082; /* Indigo/dark purple */
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Custom styles for new DS Assistant chat */
+        .chat-container {
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: #fcfaff; /* Very light purple */
+            border: 1px solid #e9d5ff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            max-width: 80%;
+            line-height: 1.6;
+        }
+        .chat-bubble-user {
+            background-color: #e9d5ff; /* Light purple */
+            color: #3b0764;
+            border-bottom-right-radius: 4px;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .chat-bubble-model {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #f3e8ff;
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        .chat-bubble-model pre {
+            background-color: #f7f3fa;
+            border: 1px solid #e9d5ff;
+            border-radius: 8px;
+            padding: 12px;
+            overflow-x: auto;
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.875rem;
+        }
+         .chat-bubble-model code {
+            font-family: 'Geist Mono', monospace;
+        }
+
+        /* Styles for Donut Chart in Week Buttons */
+        .donut-chart-bg {
+            stroke: #e5e7eb; /* gray-200 */
+        }
+        .donut-chart-fg {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative">
+    
+    <div id="vanta-body-background" class="fixed inset-0 -z-10"></div>
+
+    <!-- Background Animations -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-200/6 to-purple-200/4 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute -bottom-20 left-10 w-80 h-80 bg-gradient-to-tr from-purple-200/5 to-pink-200/4 rounded-full blur-3xl animate-float-delay"></div>
+        <div class="absolute top-1/2 left-1/4 w-72 h-72 bg-gradient-to-r from-pink-200/3 to-purple-200/3 rounded-full blur-3xl animate-float-slow"></div>
+        
+        <div class="absolute inset-0 overflow-hidden">
+            <!-- Blossom fall elements -->
+            <template id="blossom-template">
+                <div class="absolute opacity-40 animate-blossom-fall">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="3" fill="url(#blossom-gradient)" opacity="0.7" />
+                        <circle cx="6" cy="8" r="2" fill="url(#blossom-gradient)" opacity="0.6" />
+                        <circle cx="18" cy="8" r="2" fill="url(#blossom-gradient)" opacity="0.6" />
+                        <circle cx="5" cy="16" r="2" fill="url(#blossom-gradient)" opacity="0.5" />
+                        <circle cx="19" cy="16" r="2" fill="url(#blossom-gradient)" opacity="0.5" />
+                        <defs>
+                            <radialGradient id="blossom-gradient">
+                                <stop offset="0%" stopColor="#d084d0" />
+                                <stop offset="100%" stopColor="#c084a0" />
+                            </radialGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </template>
+            <div id="blossom-container"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm hidden">
+        <div class="text-center">
+            <i data-lucide="loader-2" class="text-white animate-spin mx-auto mb-4" style="width: 48px; height: 48px;"></i>
+            <p class="text-white font-semibold">AI Coach is thinking...</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 flex items-center justify-center z-40 p-4 hidden" onclick="closeModal()">
+        <div id="modal-content" class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto animate-scale-in" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-900">Modal Title</h3>
+                <button onclick="closeModal()" class="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+                    <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                </button>
+            </div>
+            <div id="modal-text" class="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed">Modal text...</div>
+        </div>
+    </div>
+
+    <!-- Header Section (Not Focus Mode) -->
+    <div id="header-section">
+        <!-- Vanta.js CLOUDS background -->
+        <div id="vanta-header" class="relative text-purple-900 py-32 px-4 md:px-6 overflow-hidden min-h-[500px] flex items-center justify-center">
+            <!-- Removed dark overlay -->
+            
+            <div class="max-w-7xl mx-auto relative z-10 w-full">
+                <div class="text-center mb-12 animate-fade-in">
+                    <div class="flex items-center justify-center gap-3 mb-6">
+                        <div class="p-3 bg-white/30 backdrop-blur-xl rounded-full border-2 border-white/50 shadow-2xl hover:shadow-3xl transition-all">
+                            <i data-lucide="brain" class="text-purple-700 drop-shadow-lg" style="width: 40px; height: 40px;"></i>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-purple-900 drop-shadow-2xl">
+                            40-Day DS Interview Mastery
+                        </h1>
+                    </div>
+                    <p class="text-lg md:text-xl text-purple-800/95 max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-lg">
+                        Master data science with 12-hour daily learning, AI coaching, and real-time progress tracking.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white/30 backdrop-blur-xl p-6 rounded-xl border-2 border-white/50 shadow-2xl hover:shadow-xl hover:bg-white/50 transition-all">
+                            <div id="stats-days-started" class="text-3xl md:text-4xl font-bold text-purple-900 drop-shadow-lg">0</div>
+                            <div class="text-purple-800/95 text-sm mt-2 font-semibold drop-shadow-md">Days Started</div>
+                        </div>
+                        <div class="bg-white/30 backdrop-blur-xl p-6 rounded-xl border-2 border-white/50 shadow-2xl hover:shadow-xl hover:bg-white/50 transition-all">
+                            <div id="stats-concepts-mastered" class="text-3xl md:text-4xl font-bold text-purple-900 drop-shadow-lg">0</div>
+                            <div class="text-purple-800/95 text-sm mt-2 font-semibold drop-shadow-md">Concepts Mastered</div>
+                        </div>
+                        <div class="bg-white/30 backdrop-blur-xl p-6 rounded-xl border-2 border-white/50 shadow-2xl hover:shadow-xl hover:bg-white/50 transition-all">
+                            <div class="text-3xl md:text-4xl font-bold text-purple-900 drop-shadow-lg">12h</div>
+                            <div class="text-purple-800/95 text-sm mt-2 font-semibold drop-shadow-md">Daily Commitment</div>
+                        </div>
+                        <div class="bg-white/30 backdrop-blur-xl p-6 rounded-xl border-2 border-white/50 shadow-2xl hover:shadow-xl hover:bg-white/50 transition-all">
+                            <div class="text-3xl md:text-4xl font-bold text-purple-900 drop-shadow-lg">40</div>
+                            <div class="text-purple-800/95 text-sm mt-2 font-semibold drop-shadow-md">Total Days</div>
+                        </div>
+                    </div>
+
+                    <button
+                        onclick="setFocusMode(true)"
+                        class="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 border-2 border-white/50 text-white rounded-lg font-bold hover:from-pink-600 hover:to-purple-700 transition-all backdrop-blur-sm drop-shadow-lg shadow-lg"
+                    >
+                        Enter Focus Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Focus Mode Exit Button -->
+    <div id="focus-mode-exit" class="fixed inset-0 z-50 flex flex-col hidden">
+        <button
+            onclick="setFocusMode(false)"
+            class="fixed top-4 right-4 z-50 p-3 bg-white/90 rounded-full shadow-lg text-purple-600 hover:text-purple-800 transition-all backdrop-blur-sm"
+        >
+            <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+        </button>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content-wrapper" class="relative z-10 max-w-7xl mx-auto transition-all duration-500 p-4 md:p-6">
+        
+        <!-- Week/Day Selector -->
+        <!-- Vanta.js BIRDS background -->
+        <div id="vanta-weeks" class="relative rounded-2xl shadow-2xl transition-all duration-500 ease-in-out p-6 md:p-8 mb-8 overflow-hidden border-2 border-pink-200/40">
+            <!-- Light card background to sit on top of Vanta -->
+            <div class="absolute inset-0 bg-white/70 backdrop-blur-md pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-pink-900 mb-2">
+                            Select Your Learning Path
+                        </h2>
+                        <p class="text-gray-600 text-lg">Expand sessions and check off concepts as you master them</p>
+                    </div>
+                </div>
+                
+                <div id="week-selector" class="grid grid-cols-3 md:grid-cols-6 gap-2 mb-8">
+                    <!-- Week buttons will be rendered here -->
+                </div>
+
+                <!-- Inner card styling updated to match screenshot -->
+                <div class="bg-white/50 rounded-lg p-6 border border-pink-200/30">
+                    <h3 id="week-title" class="text-2xl font-bold text-pink-900 mb-4">
+                        Week 1: ...
+                    </h3>
+                    <div id="day-selector" class="flex gap-2 flex-wrap">
+                        <!-- Day buttons will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vanta.js BIRDS background -->
+        <div id="vanta-middle" class="relative rounded-2xl overflow-hidden bg-[#fad3f7]">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/10 pointer-events-none"></div>
+            
+            <!-- Main Content Card -->
+            <div id="main-content-card" class="relative z-10 bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl border-2 border-pink-200/40 overflow-hidden mb-12 animate-fade-in m-4">
+            <!-- Header updated to match screenshot -->
+            <div class="p-6 md:p-10 border-b-2 border-pink-200/35 bg-white/80">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <h2 id="day-topic-title" class="text-3xl md:text-5xl font-bold text-pink-900 mb-3">
+                                Day 1: Descriptive Statistics
+                            </h2>
+                            <p id="day-quote" class="text-lg md:text-xl text-pink-800 font-semibold italic">"..."</p>
+                        </div>
+                        <div id="day-icon-container"></div>
+                    </div>
+                    
+                    <!-- Progress Bar updated to match screenshot -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span id="progress-text" class="text-base font-bold text-pink-900">
+                                Progress: 0 / 0 Concepts Mastered
+                            </span>
+                            <span id="progress-percent" class="text-lg font-bold text-pink-800">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200/70 rounded-full h-4 overflow-hidden">
+                            <div id="progress-bar-fill"
+                                class="bg-gradient-to-r from-pink-400 to-purple-400 h-4 rounded-full transition-all duration-700 shadow-lg" 
+                                style="width: 0%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex items-center border-b-2 border-gray-300 -mb-10 -mx-10 px-10 mt-8 overflow-x-auto">
+                        <button
+                            id="tab-btn-topics"
+                            onclick="setActiveTab('topics')"
+                            class="flex items-center gap-3 px-6 py-4 font-bold rounded-t-lg border-b-4 transition-all duration-300 text-base md:text-lg"
+                        >
+                            <i data-lucide="book-open" style="width: 22px; height: 22px;"></i>
+                            Topics
+                        </button>
+                        <button
+                            id="tab-btn-schedule"
+                            onclick="setActiveTab('schedule')"
+                            class="flex items-center gap-3 px-6 py-4 font-bold rounded-t-lg border-b-4 transition-all duration-300 text-base md:text-lg"
+                        >
+                            <i data-lucide="clock" style="width: 22px; height: 22px;"></i>
+                            Schedule
+                        </button>
+                        <button
+                            id="tab-btn-coach"
+                            onclick="setActiveTab('coach')"
+                            class="flex items-center gap-3 px-6 py-4 font-bold rounded-t-lg border-b-4 transition-all duration-300 text-base md:text-lg"
+                        >
+                            <i data-lucide="sparkles" class="text-purple-500" style="width: 22px; height: 22px;"></i>
+                            AI Coach
+                        </button>
+                        <!-- NEW TAB BUTTON -->
+                        <button
+                            id="tab-btn-assistant"
+                            onclick="setActiveTab('assistant')"
+                            class="flex items-center gap-3 px-6 py-4 font-bold rounded-t-lg border-b-4 transition-all duration-300 text-base md:text-lg"
+                        >
+                            <i data-lucide="message-circle" class="text-blue-500" style="width: 22px; height: 22px;"></i>
+                            DS Assistant
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Content Area -->
+                <div id="tab-content" class="p-6 md:p-10">
+                    <!-- Content will be rendered here by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- Vanta.js FOG background -->
+    <footer id="vanta-footer" class="relative py-20 border-t-2 border-pink-400/30 mt-16 overflow-hidden">
+        <!-- Removed dark gradient overlay -->
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-6">
+            <!-- Stat cards updated to match screenshot -->
+           <!-- Stat cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+    <div class="flex flex-col items-center p-8 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+        <i data-lucide="trending-up" class="text-blue-200 mb-4" style="width: 32px; height: 32px;"></i>
+        <p id="footer-stats-days" class="text-4xl font-bold mb-1">0</p>
+        <p class="text-blue-100 text-base font-semibold">Days Started</p>
+    </div>
+
+    <div class="flex flex-col items-center p-8 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+        <i data-lucide="award" class="text-blue-200 mb-4" style="width: 32px; height: 32px;"></i>
+        <p id="footer-stats-concepts" class="text-4xl font-bold mb-1">0</p>
+        <p class="text-blue-100 text-base font-semibold">Concepts Mastered</p>
+    </div>
+
+    <div class="flex flex-col items-center p-8 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+        <i data-lucide="flame" class="text-blue-200 mb-4" style="width: 32px; height: 32px;"></i>
+        <p class="text-4xl font-bold mb-1">∞</p>
+        <p class="text-blue-100 text-base font-semibold">AI Support</p>
+    </div>
+
+    <div class="flex flex-col items-center p-8 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+        <i data-lucide="calendar" class="text-blue-200 mb-4" style="width: 32px; height: 32px;"></i>
+        <p class="text-4xl font-bold mb-1">40</p>
+        <p class="text-blue-100 text-base font-semibold">Total Days</p>
+    </div>
+</div>
+
+<!-- Info cards -->
+<div class="border-t border-blue-300/20 pt-10 text-center">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="flex items-center justify-center p-6 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+            <p class="text-lg font-bold">Your Personal Data Science Interview Prep Companion</p>
+        </div>
+
+        <div class="flex items-center justify-center p-6 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+            <p class="text-base font-semibold">Powered by Google Gemini AI • Your personal DS interview coach</p>
+        </div>
+
+        <div class="flex items-center justify-center p-6 bg-blue-400/20 backdrop-blur-xl border border-blue-300/30 rounded-2xl shadow-2xl transition-all transform hover:scale-105 duration-300 text-white">
+            <p class="text-sm">© 2025 DS Interview Prep | Keep learning, keep growing</p>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </footer>
+
+
+    <!-- Main Application Logic -->
+    <script type="module">
+        // --- DATA ---
+        const hourlyScheduleTemplate = [
+            { time: '06:00 - 06:45', activity: 'Breakfast & Warm-up', type: 'break', duration: 45, icon: 'coffee', concepts: ['Eat a nutritious breakfast', 'Light stretching', 'Mental warm-up exercises'] },
+            { time: '06:45 - 08:45', activity: 'Core Learning Session 1', type: 'learn', duration: 120, icon: 'book-open', concepts: [] },
+            { time: '08:45 - 09:00', activity: 'Quick Break & Stretch', type: 'break', duration: 15, icon: 'coffee', concepts: ['Rest your eyes', 'Hydrate', 'Brief walk'] },
+            { time: '09:00 - 11:00', activity: 'Hands-on Coding Session 1', type: 'code', duration: 120, icon: 'code', concepts: [] },
+            { time: '11:00 - 12:00', activity: 'Lunch Break', type: 'break', duration: 60, icon: 'coffee', concepts: ['Eat a balanced meal', 'Relax', 'Short walk or rest'] },
+            { time: '12:00 - 01:45 PM', activity: 'Core Learning Session 2', type: 'learn', duration: 105, icon: 'brain', concepts: [] },
+            { time: '01:45 - 02:00 PM', activity: 'Snack Break', type: 'break', duration: 15, icon: 'coffee', concepts: ['Have a light snack', 'Stretch'] },
+            { time: '02:00 - 04:00 PM', activity: 'Hands-on Coding Session 2', type: 'code', duration: 120, icon: 'code', concepts: [] },
+            { time: '04:00 - 04:15 PM', activity: 'Rest & Hydrate', type: 'break', duration: 15, icon: 'coffee', concepts: ['Refresh yourself', 'Take a break'] },
+            { time: '04:15 - 05:45 PM', activity: 'Problem Solving & Practice', type: 'practice', duration: 90, icon: 'target', concepts: [] },
+            { time: '05:45 - 06:00 PM', activity: 'Review & Tomorrow Planning', type: 'review', duration: 15, icon: 'sparkles', concepts: [] }
+        ];
+
+        const motivationalQuotes = [
+            "The journey of a thousand miles begins with a single step. Start strong!", "Believe you can and you're halfway there. Keep the momentum!", "Data is the new gold. Extract its value with every concept you master.", "It's not whether you get knocked down, it's whether you get up. Push through!", "The harder I work, the luckier I get. Keep practicing.", "Success is the sum of small efforts, repeated day in and day out.", "Rest and reflect. A well-rested mind is a sharp mind.", "Data cleaning is 80% of the work. Master it!", "Transformation is key. Turn raw data into insight.", "Great features are the foundation of great models. Build wisely!", "Simplicity is the ultimate sophistication. Find clarity in complexity.", "Balance creates harmony. Find it in your learning.", "A good pipeline is a work of art. Build wisely.", "Review. Reinforce. Relax. You've earned it.", "Every master was once a beginner. Embrace it.", "Precision and recall – the delicate dance of learning.", "A single tree is weak, but a forest is strong.", "Boost your skills like you boost your models.", "Find the optimal balance in all things.", "Don't be lazy. Be an active, engaged learner!", "You've learned so much. Consolidate it.", "You can't improve what you don't measure.", "Tune your study habits for optimal performance.", "Understanding the 'why' matters more than knowing the 'what'.", "The only constant is change. Learn to adapt.", "Your dedication is your superpower.", "A model in a notebook is a thought; in production, it's a solution.", "Mega review day! Build your mental library.", "Normalize your habits for success.", "Join your knowledge together. Synergy matters.", "Optimize everything – queries and your mind.", "There's a world beyond the basics. Explore it.", "Deep learning is a marathon, not a sprint.", "Connect the dots from data to insight.", "Rest and review. You're building strength.", "It's time to build. Show what you know.", "Think about business context. It matters.", "Speed and accuracy under pressure.", "This is your dress rehearsal. Perform!", "You are ready. Trust yourself. Go win!"
+        ];
+
+        // --- ENHANCED DATA ---
+        // Added `aiCues` to each day's data
+        // --- CONTENT EXPANDED (User Request) ---
+        const originalData = {
+            1: {
+                title: "Statistics & Probability",
+                days: [
+                    {
+                        day: 1, topic: "Descriptive Statistics",
+                        learn: ["Mean, median, mode", "Variance, Standard Deviation (SD), Interquartile Range (IQR)", "Data distributions (normal, binomial, Poisson)", "Skewness and Kurtosis", "Visualizing distributions with matplotlib/seaborn"],
+                        python: ["Calculate mean, median, mode for a list without using libraries", "Write function to compute variance and standard deviation", "Generate and plot normal distribution using numpy", "Identify outliers using the 1.5 * IQR method", "Create box plots and histograms for a given dataset", "Calculate skewness and kurtosis using `scipy.stats`"],
+                        practice: "Download Kaggle dataset (e.g., House Prices) and perform complete descriptive analysis",
+                        review: "Create 20 flashcards for all new concepts",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the difference between mean, median, and mode? When would you use each?" },
+                            { type: 'code', difficulty: 'Easy', content: "Given a list `data = [1, 2, 5, 10, -3]`, write a Python function to calculate its mean *without* using any libraries like numpy." },
+                            { type: 'question', difficulty: 'Medium', content: "Explain the concept of Interquartile Range (IQR). How is it used to detect outliers?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write a Python function `calculate_variance(data)` that computes the sample variance of a list of numbers. Do not use `numpy.var()`." },
+                            { type: 'question', difficulty: 'Hard', content: "Describe the properties of a normal distribution. What is the 68-95-99.7 rule?" }
+                        ]
+                    },
+                    {
+                        day: 2, topic: "Probability Basics",
+                        learn: ["Basic probability rules (addition, multiplication)", "Conditional probability and Bayes' theorem", "Independence vs. mutual exclusivity", "Combinatorics: Permutations and Combinations"],
+                        python: ["Simulate coin flips and dice rolls to calculate empirical probabilities", "Implement Bayes' theorem calculator function", "Monte Carlo simulation for estimating Pi", "Calculate conditional probabilities from contingency tables (pandas crosstab)", "Solve 5 probability word problems with Python verification", "Write functions for `nCr` (combinations) and `nPr` (permutations)"],
+                        practice: "30 probability problems from textbook/online (e.g., 50 Challenging Problems in Probability)",
+                        review: "Feynman technique - record a 5-min audio explanation of Bayes' theorem",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is conditional probability? Give a simple real-world example." },
+                            { type: 'question', difficulty: 'Easy', content: "Are mutually exclusive events independent? Why or why not?" },
+                            { type: 'code', difficulty: 'Medium', content: "You roll two fair six-sided dice. Write a Python simulation to find the probability that their sum is 7." },
+                            { type: 'question', difficulty: 'Medium', content: "Explain Bayes' Theorem in your own words. What does `P(A|B)` mean?" },
+                            { type: 'code', difficulty: 'Hard', content: "Write a Python function `bayes_theorem(p_a, p_b_given_a, p_b_given_not_a)` that calculates `P(A|B)`." }
+                        ]
+                    },
+                    {
+                        day: 3, topic: "Probability Distributions",
+                        learn: ["Discrete: Binomial, Poisson, Geometric distributions", "Continuous: Normal, Exponential, Uniform distributions", "Properties: PDF, PMF, CDF, Expected Value, Variance", "When to use each distribution (real-world scenarios)"],
+                        python: ["Plot PDF, PMF, and CDF for all major distributions", "Write functions to calculate probability from distributions (e.g., P(X > k))", "Use `scipy.stats` for distribution calculations", "Generate random samples from different distributions", "Solve 10 problems: match scenario to distribution", "Fit a distribution to data using `scipy.stats.fit`"],
+                        practice: "Real-world distribution matching exercises (e.g., call center arrivals, heights, etc.)",
+                        review: "Day 1 flashcards (spaced repetition)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the key difference between a Binomial and a Poisson distribution?" },
+                            { type: 'code', difficulty: 'Easy', content: "Using `scipy.stats`, how would you find the probability of getting exactly 5 heads in 10 fair coin flips?" },
+                            { type: 'question', difficulty: 'Medium', content: "Explain the difference between a Probability Density Function (PDF) and a Cumulative Distribution Function (CDF)." },
+                            { type: 'code', difficulty: 'Medium', content: "Using `numpy`, generate 1000 random samples from a normal distribution with a mean of 10 and a standard deviation of 2." },
+                            { type: 'question', difficulty: 'Hard', content: "A call center receives an average of 5 calls per minute. What distribution would you use to model this, and how would you calculate the probability of receiving 0 calls in a given minute?" }
+                        ]
+                    },
+                    {
+                        day: 4, topic: "Inferential Statistics",
+                        learn: ["Sampling methods (simple random, stratified, cluster)", "Sampling distributions and standard error", "Central Limit Theorem (CLT) proof and applications", "Confidence intervals construction and interpretation", "Margin of Error"],
+                        python: ["Demonstrate CLT with simulation (1000+ iterations) from a non-normal distribution", "Calculate confidence intervals manually (using z/t scores) and with `scipy.stats`", "Implement bootstrap resampling to find a confidence interval", "Compare population vs sample statistics", "Visualize sampling distributions vs. population distribution"],
+                        practice: "Design sampling strategies for 5 different scenarios (e.g., political poll, A/B test, quality control)",
+                        review: "Day 2 flashcards",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the Central Limit Theorem (CLT) and why is it so important in statistics?" },
+                            { type: 'question', difficulty: 'Medium', content: "What does a '95% confidence interval' actually mean?" },
+                            { type: 'code', difficulty: 'Medium', content: "You have a sample of 100 observations with a mean of 50 and a standard deviation of 10. Calculate the 95% confidence interval for the population mean." },
+                            { type: 'question', difficulty: 'Hard', content: "Explain the concept of 'bootstrapping'. When would it be more useful than traditional methods for calculating a confidence interval?" },
+                            { type: 'code', difficulty: 'Hard', content: "Write a Python function that demonstrates the Central Limit Theorem. It should take a non-normally distributed population, draw 1000 samples of size n, calculate their means, and plot the distribution of those means." }
+                        ]
+                    },
+                    {
+                        day: 5, topic: "Hypothesis Testing",
+                        learn: ["Formulating Null (H0) and Alternative (H1) hypotheses", "Test types: t-tests (one-sample, two-sample, paired), z-tests, chi-square, ANOVA", "Type I/II errors, Power, and Significance (alpha)", "p-value interpretation (and its pitfalls)", "A/B Testing framework"],
+                        python: ["Implement a two-sample t-test from scratch", "Use `scipy.stats` for all test types (t-test, chi2, f_oneway)", "Power analysis with `statsmodels.stats.power`", "Create a function to interpret p-values correctly", "A/B test simulation: run 1000 tests, check Type I error rate", "Perform a Chi-Square test for independence on categorical data"],
+                        practice: "20 hypothesis testing scenarios: choose the right test, perform it in Python, and interpret results",
+                        review: "Day 3 flashcards",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is a p-value? What does a p-value of 0.03 mean if your significance level is 0.05?" },
+                            { type: 'question', difficulty: 'Medium', content: "Explain the difference between a Type I and Type II error. Give an example of each." },
+                            { type: 'question', difficulty: 'Medium', content: "When would you use a t-test versus a z-test? What about an ANOVA?" },
+                            { type: 'code', difficulty: 'Medium', content: "You have two lists, `group_a = [1, 2, 3, 4, 5]` and `group_b = [4, 5, 6, 7, 8]`. Using `scipy.stats`, perform an independent t-test to see if their means are significantly different." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the 'power' of a hypothesis test? How is it related to Type II errors, sample size, and effect size?" }
+                        ]
+                    },
+                    {
+                        day: 6, topic: "Statistical Concepts for ML",
+                        learn: ["Correlation vs. causation (with examples)", "Bias-variance tradeoff visualization and math", "Effect size (Cohen's d, etc.) and practical significance", "p-hacking and multiple comparisons problem", "Maximum Likelihood Estimation (MLE) overview"],
+                        python: ["Calculate correlation coefficients (Pearson, Spearman) and p-values", "Create correlation matrices and heatmaps (seaborn)", "Implement bias-variance decomposition for a simple model", "Statistical tests for feature relationships (e.g., t-test for binary, ANOVA for categorical)", "Complete end-to-end statistical analysis on real dataset", "Demonstrate p-hacking by running many tests"],
+                        practice: "Write a full statistical analysis report on a chosen dataset (incl. visualizations, hypothesis tests, and conclusions)",
+                        review: "Days 1 and 4 flashcards",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Explain the phrase 'correlation does not imply causation' with a clear example." },
+                            { type: 'question', difficulty: 'Medium', content: "What is the bias-variance tradeoff in machine learning? Describe a model that has high bias and one that has high variance." },
+                            { type: 'code', difficulty: 'Medium', content: "Given a pandas DataFrame `df`, how would you calculate the Pearson correlation matrix for all columns and then visualize it as a heatmap using seaborn?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is 'effect size' and how does it differ from 'statistical significance' (p-value)? Why is it important?" },
+                            { type: 'question', difficulty: 'Hard', content: "When would you use Spearman's rank correlation instead of Pearson's correlation?" }
+                        ]
+                    },
+                    {
+                        day: 7, topic: "REST & REVIEW (Sunday)",
+                        learn: ["Light review only", "Consolidate flashcards into a single deck (e.g., Anki)", "Organize notes and code snippets", "Read one DS blog post (e.g., Towards Data Science)"],
+                        python: ["Solve 10 mixed Python statistics problems (HackerRank, LeetCode)", "Code probability distributions from memory (e.g., formula for Poisson PMF)", "Debug 5 statistical code snippets (e.g., misinterpreting p-value, off-by-one errors)"],
+                        practice: "Self-created 50-question quiz (mix of concepts and code)",
+                        review: "All Week 1 flashcards",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Review: What are the three main measures of central tendency, and what is one pro/con of each?" },
+                            { type: 'code', difficulty: 'Medium', content: "Review: Write a Python function `get_iqr(data)` that calculates the Interquartile Range for a list of numbers without using a library function for quantiles." },
+                            { type: 'question', difficulty: 'Medium', content: "Review: In your own words, what is the Central Limit Theorem and why is it the most important concept from this week?" },
+                            { type: 'code', difficulty: 'Hard', content: "Review: Given `p_disease = 0.01`, `p_positive_given_disease = 0.95`, and `p_positive_given_no_disease = 0.05` (a false positive), what is the probability a person has the disease given they tested positive? Implement the Bayes' theorem calculation." },
+                            { type: 'question', difficulty: 'Hard', content: "Review: You are running an A/B test. Your test group has a conversion rate of 5% and your control group has a rate of 4%. How would you determine if this difference is statistically significant? Name the test(s) you would use." }
+                        ]
+                    }
+                ]
+            },
+            2: {
+                title: "Data Preprocessing & Feature Engineering",
+                days: [
+                    {
+                        day: 8, topic: "Data Cleaning",
+                        learn: ["Missing data strategies (deletion, imputation)", "Types of missing data (MCAR, MAR, NMAR)", "Imputation methods: Mean/median/mode, constant, regression, KNN", "Outlier detection (IQR, Z-score, Isolation Forest)"],
+                        python: ["Handle missing values with pandas (`.isnull()`, `.dropna()`, `.fillna()`)", "Implement `sklearn.impute.KNNImputer`", "Detect and cap/remove outliers using IQR and Z-score methods", "Visualize missing data patterns (`missingno` library)"],
+                        practice: "Clean 3 messy datasets from Kaggle (e.g., Titanic, Ames Housing)",
+                        review: "Week 1 concepts (Statistics)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What are the 3 main types of missing data (MCAR, MAR, NMAR)? Why does the type matter?" },
+                            { type: 'code', difficulty: 'Easy', content: "Given a pandas DataFrame `df` and a column 'age' with missing values, how do you fill them with the mean age?" },
+                            { type: 'question', difficulty: 'Medium', content: "When is it appropriate to delete rows with missing data? When is it a bad idea?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write a function that takes a pandas Series and returns a new Series with outliers (defined as > 3 standard deviations from the mean) replaced by `np.nan`." },
+                            { type: 'question', difficulty: 'Hard', content: "Explain how k-Nearest Neighbors (KNN) imputation works. What are its pros and cons compared to mean/median imputation?" }
+                        ]
+                    },
+                    {
+                        day: 9, topic: "Data Transformation",
+                        learn: ["Scaling vs. Normalization", "Scalers: StandardScaler, MinMaxScaler, RobustScaler (for outliers)", "Encoding: Label encoding vs. One-hot encoding", "Log, Box-Cox, and Yeo-Johnson transformations for skewed data", "Handling ordinal features"],
+                        python: ["Apply all scalers (StandardScaler, MinMaxScaler, RobustScaler) from sklearn", "Encode categorical variables (LabelEncoder, OneHotEncoder, `pd.get_dummies`)", "Create sklearn preprocessing pipelines with `Pipeline`", "Apply Box-Cox transformation (`scipy.stats.boxcox`) and plot results"],
+                        practice: "Transform datasets from yesterday for ML models (try different scaling/encoding)",
+                        review: "Week 1 Days 4-6 (Inferential Stats)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the difference between StandardScaler and MinMaxScaler? When would you use each?" },
+                            { type: 'question', difficulty: 'Medium', content: "Explain the difference between Label Encoding and One-Hot Encoding. Which one would you use for a 'color' feature (Red, Green, Blue) in a linear regression model, and why?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn.preprocessing`, apply `StandardScaler` to the 'Age' column and `OneHotEncoder` to the 'City' column of a pandas DataFrame `df`." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the 'dummy variable trap' and how do you avoid it when using one-hot encoding?" },
+                            { type: 'code', difficulty: 'Hard', content: "You observe a feature 'Income' is heavily right-skewed. How would you apply a log transformation to it using `numpy`? Why would this be beneficial for a model?" }
+                        ]
+                    },
+                    {
+                        day: 10, topic: "Feature Engineering",
+                        learn: ["Feature creation from datetime (day of week, month, year, holiday)", "Interaction features (e.g., `feat1 * feat2`, `feat1 / feat2`)", "Polynomial features (`sklearn.preprocessing.PolynomialFeatures`)", "Binning/Discretization (equal-width, equal-frequency)", "Domain-specific feature creation (e.g., `room_size = area / num_rooms`)"],
+                        python: ["Create datetime features (day of week, month, is_weekend) from a timestamp", "Generate interaction features (e.g., `feat1 * feat2`)", "Use `sklearn.preprocessing.PolynomialFeatures`", "Binning continuous variables into categories using `pd.cut` and `pd.qcut`", "Create 3+ domain-specific features for your chosen dataset"],
+                        practice: "Engineer 20+ new features for a Kaggle dataset (e.g., Zillow, Instacart)",
+                        review: "Days 8-9 (Cleaning, Transformation)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is feature engineering? Why is it often called the most important part of the ML process?" },
+                            { type: 'code', difficulty: 'Easy', content: "Given a pandas DataFrame `df` with a column 'datetime' (as a string), how do you convert it to a datetime object and create new columns for 'month' and 'day_of_week'?" },
+                            { type: 'question', difficulty: 'Medium', content: "What are 'interaction features'? Give an example of why `feature_A * feature_B` might be a better predictor than A and B alone." },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn.preprocessing.PolynomialFeatures`, generate all polynomial and interaction features up to degree 2 for a numpy array `X`." },
+                            { type: 'question', difficulty: 'Hard', content: "Explain 'binning' (or 'discretization') of a continuous variable. What are the potential advantages and disadvantages of doing this?" }
+                        ]
+                    },
+                    {
+                        day: 11, topic: "Dimensionality Reduction",
+                        learn: ["Principal Component Analysis (PCA) mathematics & assumptions", "Explained variance ratio and scree plots", "t-SNE and UMAP for visualization", "Feature selection vs. Feature extraction", "Linear Discriminant Analysis (LDA) for supervised reduction"],
+                        python: ["Implement PCA with `sklearn.decomposition.PCA`", "Plot the cumulative explained variance", "Apply t-SNE and UMAP to visualize high-dimensional data (e.g., MNIST)", "Apply LDA and compare to PCA results", "Use PCA as a preprocessing step for a model and check performance"],
+                        practice: "Reduce dimensions on 3 datasets and compare model performance (PCA vs. raw)",
+                        review: "Random Week 1 concepts",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "In simple terms, what does Principal Component Analysis (PCA) do?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn`, how would you perform PCA on a feature matrix `X` and find the number of components needed to explain 95% of the variance?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is the 'explained variance ratio' plot in PCA, and how do you use it to select the number of components (k)?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is the main difference between PCA and t-SNE? When would you use t-SNE?" },
+                            { type: 'question', difficulty: 'Hard', content: "Are the principal components created by PCA always interpretable? Explain." }
+                        ]
+                    },
+                    {
+                        day: 12, topic: "Handling Imbalanced Data",
+                        learn: ["SMOTE (Synthetic Minority Over-sampling Technique)", "Random Oversampling and Undersampling (and their drawbacks)", "Tomek Links and Edited Nearest Neighbours (advanced undersampling)", "Using class weights in models", "Choosing appropriate metrics (Precision, Recall, F1, AUC-PR)"],
+                        python: ["Implement SMOTE using `imblearn` library", "Perform random oversampling and undersampling", "Set `class_weight='balanced'` in sklearn models", "Plot results of SMOTE (e.g., `scatter_matrix`)", "Evaluate model using `classification_report` and `average_precision_score`"],
+                        practice: "Balance 5 imbalanced datasets and train classifiers, comparing metrics",
+                        review: "Days 10-11 (Feature Eng, PCA)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is imbalanced data, and why is it a problem for machine learning models?" },
+                            { type: 'question', difficulty: 'Medium', content: "Explain the difference between random oversampling and random undersampling. What is a major drawback of each?" },
+                            { type: 'code', difficulty: 'Medium', content: "How do you install the `imbalanced-learn` library? Assuming you have `X_train` and `y_train`, show the code to apply SMOTE." },
+                            { type: 'question', difficulty: 'Hard', content: "How does SMOTE work? How is it different from simple random oversampling?" },
+                            { type: 'question', difficulty: 'Hard', content: "Besides sampling techniques, what other methods can be used to handle imbalanced data? (Hint: Think about metrics and model parameters)." }
+                        ]
+                    },
+                    {
+                        day: 13, topic: "Advanced Preprocessing & Pipelines",
+                        learn: ["Feature selection methods: Filter (e.g., correlation), Wrapper (e.g., RFE), Embedded (e.g., Lasso)", "Building complex `sklearn` pipelines with `ColumnTransformer`", "Intro to time series preprocessing (lag features, rolling windows)", "Saving and loading preprocessing pipelines (`joblib` or `pickle`)"],
+                        python: ["Use `sklearn.feature_selection.SelectKBest` (Filter)", "Implement Recursive Feature Elimination (RFE) with a model (Wrapper)", "Build a `ColumnTransformer` for mixed data types (numeric, categorical)", "Create and use lag/rolling window features using `pandas.shift()` and `.rolling()`", "Save a trained pipeline to a file"],
+                        practice: "Create a complete, reusable preprocessing pipeline library/script",
+                        review: "All Week 2 concepts",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the purpose of an `sklearn` Pipeline? What is one major advantage of using it?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write the code to create a simple `sklearn` Pipeline that first scales the data using `StandardScaler` and then fits a `LogisticRegression` model." },
+                            { type: 'question', difficulty: 'Medium', content: "Briefly explain the 3 main types of feature selection: Filter, Wrapper, and Embedded methods." },
+                            { type: 'question', difficulty: 'Hard', content: "What is Recursive Feature Elimination (RFE)? How does it work?" },
+                            { type: 'code', difficulty: 'Hard', content: "How would you use `sklearn.compose.ColumnTransformer` to apply `StandardScaler` to numeric columns (`num_cols`) and `OneHotEncoder` to categorical columns (`cat_cols`)?" }
+                        ]
+                    },
+                    {
+                        day: 14, topic: "REST & REVIEW (Sunday)",
+                        learn: ["Light review of all Week 2 topics", "Organize preprocessing code snippets into a personal library", "Read about common data leakage scenarios", "Review `sklearn` Pipeline documentation"],
+                        python: ["Code a full preprocessing pipeline (numeric + categorical) from scratch", "Debug 5 common preprocessing errors (e.g., fitting on test data)", "Feature engineer on a new dataset for 1 hour", "Implement RFE from scratch (conceptual)"],
+                        practice: "Week 2 comprehensive quiz (self-made)",
+                        review: "All Weeks 1-2 flashcards",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Review: Why do we need to scale features before feeding them to algorithms like KNN or SVM?" },
+                            { type: 'code', difficulty: 'Medium', content: "Review: Given a pandas DataFrame `df` with columns 'numeric' and 'categorical', write a `ColumnTransformer` that applies `StandardScaler` to 'numeric' and `OneHotEncoder` to 'categorical'." },
+                            { type: 'question', difficulty: 'Medium', content: "Review: Explain SMOTE and when you would use it." },
+                            { type: 'question', difficulty: 'Hard', content: "Review: Compare and contrast PCA and RFE (Recursive Feature Elimination). Are they used for the same purpose?" },
+                            { type: 'code', difficulty: 'Hard', content: "Review: Write a function that takes a pandas Series and returns `True` for any value that is an outlier based on the IQR method (1.5 * IQR)." }
+                        ]
+                    }
+                ]
+            },
+            3: {
+                title: "Machine Learning Fundamentals",
+                days: [
+                    {
+                        day: 15, topic: "ML Basics & Linear Regression",
+                        learn: ["Supervised vs. Unsupervised vs. Reinforcement learning", "Linear regression (OLS, cost function, gradient descent)", "Assumptions of Linear Regression (LINEM)", "Evaluating regression (MAE, MSE, RMSE, R-squared, Adjusted R-squared)"],
+                        python: ["Implement Simple Linear Regression from scratch (gradient descent)", "Use `sklearn.linear_model.LinearRegression`", "Calculate and interpret MAE, MSE, R2, Adjusted R2", "Check model assumptions (e.g., residual plots)"],
+                        practice: "Predict housing prices on 3 datasets, evaluating and plotting residuals",
+                        review: "Week 1 (Stats)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the difference between Supervised and Unsupervised learning? Give one example algorithm for each." },
+                            { type: 'question', difficulty: 'Medium', content: "What is the 'cost function' in linear regression? What does OLS (Ordinary Least Squares) try to minimize?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn`, train a `LinearRegression` model on `X_train` and `y_train`, then predict on `X_test` and print the R-squared score." },
+                            { type: 'question', difficulty: 'Hard', content: "What are the key assumptions of Linear Regression? What happens if they are violated?" },
+                            { type: 'code', difficulty: 'Hard', content: "Implement the cost function (Mean Squared Error) for linear regression in Python: `def compute_cost(X, y, theta): ...`" }
+                        ]
+                    },
+                    {
+                        day: 16, topic: "Logistic Regression & Regularization",
+                        learn: ["Logistic regression (sigmoid function, log-loss/cross-entropy)", "Decision boundary interpretation", "L1 (Lasso) and L2 (Ridge) regularization", "How regularization prevents overfitting (shrinkage)", "Elastic-Net (L1+L2)"],
+                        python: ["Implement Logistic Regression from scratch (cost function & gradient)", "Use `sklearn.linear_model.LogisticRegression` (and `SGDClassifier(loss='log')`)", "Visualize L1 vs L2 penalties' effect on coefficients", "Plot decision boundaries for 2D data", "Compare Lasso and Ridge on a high-feature dataset"],
+                        practice: "5 classification problems (e.g., spam detection, credit default)",
+                        review: "Day 15 + Week 2",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "How does Logistic Regression differ from Linear Regression? What is the purpose of the sigmoid function?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is 'overfitting'? How do L1 and L2 regularization help prevent it?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn`, create a `LogisticRegression` model with L2 regularization (Ridge) and a C value of 0.1." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the main practical difference between L1 (Lasso) and L2 (Ridge) regularization? When would you choose one over the other?" },
+                            { type: 'question', difficulty: 'Hard', content: "Explain the 'log-loss' (or binary cross-entropy) cost function for logistic regression. Why can't we just use MSE?" }
+                        ]
+                    },
+                    {
+                        day: 17, topic: "Decision Trees & Random Forest",
+                        learn: ["Decision tree algorithm (nodes, leaves, root)", "Splitting criteria: Entropy, Information Gain, and Gini impurity", "How Random Forest works (bagging, feature randomness)", "Tree pruning (pre-pruning vs. post-pruning)", "Feature importance in tree models"],
+                        python: ["Implement a simple Decision Tree (conceptual)", "Visualize trees with `graphviz` or `sklearn.tree.plot_tree`", "Tune `RandomForestClassifier` hyperparameters (e.g., `n_estimators`, `max_depth`, `max_features`)", "Extract and plot feature importances", "Compare pruned tree vs. unpruned tree"],
+                        practice: "Compare performance of a single tree vs. a random forest on a noisy dataset",
+                        review: "Days 15-16",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "How does a Decision Tree make a prediction? What is 'Gini Impurity'?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is the main disadvantage of a single Decision Tree? How does Random Forest solve this problem?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn`, train a `RandomForestClassifier` with 100 trees and a max depth of 5. Fit it on `X_train`, `y_train`." },
+                            { type: 'question', difficulty: 'Hard', content: "Explain the two main sources of randomness in a Random Forest algorithm (bagging and feature-subsampling). Why are both important?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is 'pruning' in the context of decision trees? Why is it necessary?" }
+                        ]
+                    },
+                    {
+                        day: 18, topic: "Boosting Algorithms",
+                        learn: ["Boosting vs. Bagging (sequential vs. parallel)", "AdaBoost algorithm (weights on samples)", "Gradient Boosting (GBM) (learning from residuals)", "XGBoost, LightGBM, CatBoost (high-level advantages)", "Key hyperparameters (learning rate, n_estimators)"],
+                        python: ["Implement AdaBoost (conceptual)", "Use `sklearn.ensemble.GradientBoostingClassifier`", "Tune XGBoost hyperparameters using `GridSearchCV`", "Implement early stopping with XGBoost", "Compare speed of XGBoost vs. LightGBM"],
+                        practice: "Kaggle competition using XGBoost or LightGBM",
+                        review: "Week 2 concepts",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the main difference between Bagging (like Random Forest) and Boosting (like AdaBoost)?" },
+                            { type: 'question', difficulty: 'Medium', content: "Briefly explain how AdaBoost works. How does it 'learn' from the mistakes of previous weak learners?" },
+                            { type: 'code', difficulty: 'Medium', content: "Import and initialize an `XGBClassifier` from the `xgboost` library. What is one hyperparameter you would definitely tune?" },
+                            { type: 'question', difficulty: 'Hard', content: "How does Gradient Boosting (GBM) work? What is it 'boosting' (i.e., what do the subsequent trees learn)?" },
+                            { type: 'question', difficulty: 'Hard', content: "Why are XGBoost and LightGBM often the winning algorithms in Kaggle competitions? Name one advantage they have over traditional GBM." }
+                        ]
+                    },
+                    {
+                        day: 19, topic: "SVM & Kernel Methods",
+                        learn: ["Support Vector Machines (SVM) math (maximal margin hyperplane)", "Hard margin vs. Soft margin (C parameter)", "The kernel trick (Linear, Polynomial, RBF)", "Hyperparameters: C and gamma", "Support vectors (what are they?)"],
+                        python: ["Use `sklearn.svm.SVC` and `SVR`", "Experiment with different kernels (linear, rbf, poly)", "Tune C and gamma parameters using `RandomizedSearchCV`", "Visualize decision boundaries for different C and gamma values", "Plot the support vectors"],
+                        practice: "5 problems on non-linear datasets (e.g., 'moons' dataset)",
+                        review: "Days 17-18",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "In SVM, what is the 'margin'? What does SVM try to maximize?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is the 'kernel trick'? Why is it useful?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn.svm.SVC`, create a classifier with an 'rbf' kernel, a `C` value of 10, and a `gamma` of 0.1." },
+                            { type: 'question', difficulty: 'Hard', content: "Explain the role of the `C` and `gamma` hyperparameters in an RBF kernel SVM. What happens if `C` is very large? What if `gamma` is very large?" },
+                            { type: 'question', difficulty: 'Hard', content: "When would you choose an SVM over a Random Forest, or vice-versa?" }
+                        ]
+                    },
+                    {
+                        day: 20, topic: "KNN, Naive Bayes & Clustering",
+                        learn: ["K-Nearest Neighbors (KNN) (distance metrics, curse of dimensionality)", "Naive Bayes (Bayes theorem, 'naive' assumption, Laplace smoothing)", "Unsupervised: K-Means clustering (algorithm steps)", "Evaluating clustering (Elbow method, silhouette score)", "Hierarchical clustering (dendrograms)"],
+                        python: ["KNN from scratch (distance calculation)", "Use `sklearn.neighbors.KNeighborsClassifier` (try different `k`)", "Implement Gaussian Naive Bayes and Multinomial Naive Bayes", "Use `sklearn.cluster.KMeans`", "Plot the Elbow method curve", "Plot a dendrogram using `scipy.cluster.hierarchy`"],
+                        practice: "Segment unlabeled customer data with K-Means and Hierarchical clustering",
+                        review: "All Week 3",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "How does the K-Nearest Neighbors (KNN) algorithm work for classification? What is the 'K'?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is the 'naive' assumption in Naive Bayes? Why is it 'naive'?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn.cluster.KMeans`, how would you find the optimal number of clusters 'k' for a dataset `X` using the Elbow method? (Describe the process)." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the Silhouette Score? How is it used to evaluate the quality of clusters from K-Means?" },
+                            { type: 'code', difficulty: 'Hard', content: "Write a `KNeighborsClassifier` from `sklearn` with `n_neighbors=5` and `weights='distance'`. What does `weights='distance'` do?" }
+                        ]
+                    },
+                    {
+                        day: 21, topic: "REST & REVIEW (Sunday)",
+                        learn: ["Light review of all algorithms", "Algorithm pros/cons chart (e.g., speed, interpretability, data size)", "When to use which algorithm (flowchart)", "Review math for Linear/Logistic regression"],
+                        python: ["Implement 3 algorithms from memory (e.g., KNN, K-Means, Linear Regression)", "10 problems: 'Which algorithm for this scenario?'", "Debug a broken ML pipeline (e.g., shape errors, data leakage)", "Implement logistic regression cost function from scratch"],
+                        practice: "Algorithm selection project: Given 3 datasets, justify, implement, and compare 3+ models for each",
+                        review: "All Weeks 1-3",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Review: What's the difference between a regression and a classification problem?" },
+                            { type: 'question', difficulty: 'Medium', content: "Review: Compare Random Forest and Gradient Boosting. What's the key difference in how they build trees?" },
+                            { type: 'code', difficulty: 'Medium', content: "Review: Write the `sklearn` code to create a pipeline that first scales data with `StandardScaler` and then fits an `SVC` model." },
+                            { type: 'question', difficulty: 'Hard', content: "Review: You have a dataset with 100 features and only 1,000 samples. Which model might be prone to overfitting, and what technique (learned in Day 16) could you use to help?" },
+                            { type: 'question', difficulty: 'Hard', content: "Review: You have a high-dimensional (10,000+ features) text dataset. Which classification algorithm, known for its speed and simplicity, would be a good first choice? (Hint: Day 20)." }
+                        ]
+                    }
+                ]
+            },
+            4: {
+                title: "Advanced ML & Model Evaluation",
+                days: [
+                    {
+                        day: 22, topic: "Model Evaluation Metrics",
+                        learn: ["Classification metrics: Accuracy, Precision, Recall, F1-score, Specificity", "Regression metrics: MSE, RMSE, MAE, R-squared, Adjusted R-squared", "Confusion matrix (all quadrants)", "ROC curve and AUC", "Precision-Recall (PR) curve and AUC-PR (for imbalance)"],
+                        python: ["Implement precision, recall, F1 from scratch (from confusion matrix)", "Use `sklearn.metrics` (e.g., `classification_report`, `roc_auc_score`)", "Plot ROC curves and PR curves", "Calculate metrics for multi-class classification", "Compare RMSE vs. MAE (sensitivity to outliers)"],
+                        practice: "Evaluate 5 models from last week, choose best based on context (e.g., fraud vs. spam)",
+                        review: "Week 3",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is a confusion matrix? What do True Positives, True Negatives, False Positives, and False Negatives mean?" },
+                            { type: 'question', difficulty: 'Medium', content: "Explain Precision and Recall. When would you prioritize one over the other? (e.g., spam detection vs. medical diagnosis)." },
+                            { type: 'code', difficulty: 'Medium', content: "Given `y_true` and `y_pred`, show the `sklearn` code to print a full classification report." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the ROC curve, and what does the AUC (Area Under the Curve) represent? What does an AUC of 0.5 mean?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is the F1-score and why is it useful, especially for imbalanced datasets?" }
+                        ]
+                    },
+                    {
+                        day: 23, topic: "Cross-Validation & Hyperparameter Tuning",
+                        learn: ["K-fold Cross-Validation", "Stratified K-fold (for imbalance)", "Leave-One-Out CV (LOOCV)", "Grid search vs. Random search (pros/cons)", "Intro to Bayesian optimization (e.g., `hyperopt`, `Optuna`)", "Nested Cross-Validation"],
+                        python: ["Implement K-fold CV from scratch", "Use `sklearn.model_selection.cross_val_score`", "Use `sklearn.model_selection.GridSearchCV`", "Use `sklearn.model_selection.RandomizedSearchCV`", "Basic demo of `Optuna`", "Implement StratifiedKFold"],
+                        practice: "Tune 5 algorithms from Week 3 using `RandomizedSearchCV`",
+                        review: "Day 22 + Weeks 1-2",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is K-Fold Cross-Validation, and why is it better than a simple train/test split?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is the difference between Grid Search and Random Search for hyperparameter tuning? Which one is often more efficient?" },
+                            { type: 'code', difficulty: 'Medium', content: "Set up a parameter grid for a `RandomForestClassifier` to tune `n_estimators` ([100, 200]) and `max_depth` ([5, 10]). Then, show the `GridSearchCV` setup." },
+                            { type: 'question', difficulty: 'Hard', content: "What is 'data leakage' in cross-validation? Give an example of how it could happen (e.g., during preprocessing)." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the main idea behind Bayesian Optimization for hyperparameter tuning? How is it different from Grid/Random search?" }
+                        ]
+                    },
+                    {
+                        day: 24, topic: "Advanced Feature Engineering & Selection",
+                        learn: ["Feature importance (from tree models, L1)", "Permutation importance", "SHAP (SHapley Additive exPlanations) basics", "Target encoding (for high-cardinality categorical features)", "Recursive Feature Elimination (RFE)"],
+                        python: ["Extract `feature_importance_` from tree models", "Implement `sklearn.inspection.permutation_importance`", "Use the `shap` library to explain a model's prediction (summary plot)", "Implement RFE (`sklearn.feature_selection.RFE`)", "Implement basic target encoding"],
+                        practice: "Feature selection study on a project (compare methods)",
+                        review: "Days 22-23",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "How can you get feature importance from a trained Random Forest model in `sklearn`?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is Permutation Importance? How does it work, and what is one advantage it has over the default `feature_importance_` from trees?" },
+                            { type: 'code', difficulty: 'Medium', content: "Import the `shap` library. How would you initialize an `Explainer` for a tree-based model (like XGBoost)?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is a SHAP value? What does it mean for a single feature and a single prediction?" },
+                            { type: 'question', difficulty: 'Hard', content: "Compare Filter, Wrapper, and Embedded methods for feature selection. Give one example of each." }
+                        ]
+                    },
+                    {
+                        day: 25, topic: "Time Series Basics",
+                        learn: ["Time series components (trend, seasonality, cyclicity, noise)", "Stationarity and differencing (ADF test)", "Autocorrelation (ACF) and Partial Autocorrelation (PACF)", "ARIMA models (p, d, q)", "ETS (Error, Trend, Seasonality) models"],
+                        python: ["Perform Augmented Dickey-Fuller (ADF) test for stationarity", "Plot ACF and PACF (and interpret them)", "Fit a simple ARIMA model with `statsmodels`", "Use `pmdarima` to auto-select ARIMA parameters", "Decompose time series using `statsmodels.tsa.seasonal_decompose`"],
+                        practice: "Forecast 3 time series datasets (e.g., stock price, weather, airline passengers)",
+                        review: "Random Weeks 1-3",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What are the three main components of a time series? (Trend, ...)" },
+                            { type: 'question', difficulty: 'Medium', content: "What does it mean for a time series to be 'stationary'? Why is this important for models like ARIMA?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `statsmodels.tsa.stattools`, how do you perform the Augmented Dickey-Fuller (ADF) test? How do you interpret the p-value?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is the difference between an ACF and a PACF plot? How do you use them to determine the `p` and `q` parameters for an ARIMA model?" },
+                            { type: 'question', difficulty: 'Hard', content: "What do the `p`, `d`, and `q` in an `ARIMA(p, d, q)` model stand for?" }
+                        ]
+                    },
+                    {
+                        day: 26, topic: "Recommender Systems",
+                        learn: ["Collaborative filtering (User-based, Item-based)", "Content-based filtering", "Matrix factorization (SVD, ALS)", "Evaluation metrics (RMSE, MAE, Precision@k, MAP)", "Cold start problem (user and item)"],
+                        python: ["Implement user-based collaborative filtering (cosine similarity matrix)", "Implement content-based filtering (TF-IDF on item descriptions)", "Use the `surprise` library for SVD", "Calculate cosine similarity with `sklearn`", "Split and evaluate a recommender model"],
+                        practice: "Build a movie recommender on the MovieLens dataset (compare CF and SVD)",
+                        review: "Days 24-25",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the difference between Collaborative Filtering and Content-Based Filtering in recommender systems?" },
+                            { type: 'question', difficulty: 'Medium', content: "Explain User-Based Collaborative Filtering. What is the 'cold start' problem?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `sklearn.metrics.pairwise`, how would you compute the cosine similarity matrix for a user-item matrix `U`?" },
+                            { type: 'question', difficulty: 'Hard', content: "How does Matrix Factorization (like SVD) work for recommendations? What are the 'latent features' it discovers?" },
+                            { type: 'question', difficulty: 'Hard', content: "What are some ways to evaluate a recommender system? (Hint: It's different from standard classification)." }
+                        ]
+                    },
+                    {
+                        day: 27, topic: "ML System Design",
+                        learn: ["Training vs. serving infrastructure (batch vs. online)", "Model monitoring (data drift, concept drift, performance degradation)", "A/B testing for ML models (design, metrics)", "Model versioning and model registry", "Building a simple API (Flask/FastAPI)"],
+                        python: ["Build a minimal Flask API for model serving", "Logging predictions and inputs", "Simple data drift detection (e.g., KS test on feature distributions)", "Simulate and analyze an A/B test", "Save model with version number"],
+                        practice: "Design 3 ML systems (e.g., YouTube recs, Uber ETAs, spam filter)",
+                        review: "All Week 4",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What's the difference between 'training' a model and 'serving' a model (inference)?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is 'data drift' and 'concept drift'? Why is it crucial to monitor for them in a production ML system?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write a minimal Flask app (`app.py`) with a single `/predict` endpoint that takes a JSON request and returns a mock prediction." },
+                            { type: 'question', difficulty: 'Hard', content: "You want to deploy a new recommendation model. How would you use an A/B test to safely roll it out and compare it to the old model? What metrics would you track?" },
+                            { type: 'question', difficulty: 'Hard', content: "Describe the components you would need for an end-to-end ML system that retrains daily. (e.g., data pipeline, feature store, model registry...)" }
+                        ]
+                    },
+                    {
+                        day: 28, topic: "MEGA REVIEW (Sunday)",
+                        learn: ["Comprehensive review of all topics Weeks 1-4", "Identify 3 weakest areas for deep dive", "Read 'Rules of Machine Learning' by Google", "Review ML system design patterns"],
+                        python: ["20 mixed problems (stats, preprocessing, ML)", "Implement 5 algorithms from memory (K-Means, LinReg, LogReg, KNN, Decision Tree)", "Debug a full ML pipeline (data leakage, wrong metric, etc.)", "Build a complete pipeline from raw CSV to prediction"],
+                        practice: "Full 4-hour mock technical test (e.g., from a company's past questions)",
+                        review: "ALL Weeks 1-4 flashcards",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Review: What is the bias-variance tradeoff?" },
+                            { type: 'question', difficulty: 'Medium', content: "Review: Explain Precision, Recall, and F1-score. When is F1-score the best metric to use?" },
+                            { type: 'code', difficulty: 'Medium', content: "Review: Write the `sklearn` code to perform a `GridSearchCV` for a `KNeighborsClassifier`, tuning `n_neighbors` from 1 to 10." },
+                            { type: 'question', difficulty: 'Hard', content: "Review: Compare and contrast PCA, t-SNE, and K-Means. What is each one used for?" },
+                            { type: 'code', difficulty: 'Hard', content: "Review: You have a pipeline that scales data *before* splitting it into train and test sets. What is this error called, and why is it bad? Show the correct order." }
+                        ]
+                    }
+                ]
+            },
+            5: {
+                title: "DBMS, SQL & Big Data",
+                days: [
+                    {
+                        day: 29, topic: "DBMS Fundamentals",
+                        learn: ["Relational databases (RDBMS) vs. Non-relational (NoSQL)", "ACID properties (Atomicity, Consistency, Isolation, Durability)", "Keys (Primary, Foreign, Composite, Candidate)", "Normalization (1NF, 2NF, 3NF, BCNF)", "Denormalization (when and why)"],
+                        python: ["Use `sqlite3` library in Python", "Create tables, insert data, update, delete", "Define constraints (PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE)", "Perform JOINs within `sqlite3`"],
+                        practice: "Design a normalized schema for a university (students, courses, enrollments, professors)",
+                        review: "Week 3 algorithms",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is a Primary Key? What is a Foreign Key? How do they create a relationship?" },
+                            { type: 'question', difficulty: 'Medium', content: "What does ACID stand for? Briefly explain 'Atomicity'." },
+                            { type: 'code', difficulty: 'Medium', content: "Write the SQL `CREATE TABLE` statement for a 'Students' table with an `id` (primary key), `name` (text), and `gpa` (real)." },
+                            { type: 'question', difficulty: 'Hard', content: "What is Normalization? Explain 3rd Normal Form (3NF) and why it's important." },
+                            { type: 'question', difficulty: 'Hard', content: "What is a database 'transaction'? How does it relate to the ACID properties?" }
+                        ]
+                    },
+                    {
+                        day: 30, topic: "SQL Deep Dive",
+                        learn: ["All JOIN types (INNER, LEFT, RIGHT, FULL, CROSS, SELF)", "Subqueries (in SELECT, FROM, WHERE, correlated vs. uncorrelated)", "Window functions (ROW_NUMBER, RANK, DENSE_RANK, LEAD, LAG, NTILE)", "Common Table Expressions (CTEs) (recursive CTEs intro)", "GROUP BY, HAVING vs. WHERE"],
+                        python: ["Solve 30 SQL problems (e.g., on LeetCode, HackerRank)", "Practice aggregations (`GROUP BY`, `HAVING`)", "Write complex queries using multiple JOINs and subqueries", "Use CTEs to simplify complex queries", "Use window functions to solve ranking problems"],
+                        practice: "10 LeetCode SQL (Medium/Hard) - focus on window functions",
+                        review: "Day 29 + metrics (Week 4)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the difference between an INNER JOIN and a LEFT JOIN?" },
+                            { type: 'code', difficulty: 'Medium', content: "Given `Employees(id, name, dept_id)` and `Departments(id, name)`, write a SQL query to find the name of each employee and their department's name." },
+                            { type: 'question', difficulty: 'Medium', content: "What is a window function? How is it different from a `GROUP BY` operation?" },
+                            { type: 'code', difficulty: 'Hard', content: "Write a SQL query to find the 3rd highest salary from an `Employees` table with `(id, salary)` columns. (Do not use `LIMIT`)." },
+                            { type: 'code', difficulty: 'Hard', content: "Using a window function, write a SQL query to find the top 2 highest-paid employees *within each department*. Tables: `Employees(id, name, salary, dept_id)`." }
+                        ]
+                    },
+                    {
+                        day: 31, topic: "Advanced SQL & Database Design",
+                        learn: ["Transactions (COMMIT, ROLLBACK, SAVEPOINT)", "Database indexing (B-Trees, Hash, Clustered vs. Non-clustered)", "Query optimization (`EXPLAIN`, reading query plans)", "Stored procedures, Triggers, Views (high-level)", "Database locking (pessimistic vs. optimistic)"],
+                        python: ["Use `try...except...finally` with `sqlite3` to manage transactions", "Analyze `EXPLAIN QUERY PLAN` output in `sqlite3`", "Create an index and measure query speed difference (before/after)", "Connect to PostgreSQL/MySQL from Python (e.g., `psycopg2`, `mysql-connector`)"],
+                        practice: "Optimize 5 slow queries using `EXPLAIN` and indexing",
+                        review: "All SQL concepts",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is a database index? What is the main benefit of using one? What is a drawback?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write the SQL to create an index named `idx_salary` on the `salary` column of the `Employees` table." },
+                            { type: 'question', difficulty: 'Medium', content: "What does the `EXPLAIN` (or `EXPLAIN QUERY PLAN`) command do? How is it useful for optimization?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is a 'transaction'? What do `COMMIT` and `ROLLBACK` do?" },
+                            { type: 'question', difficulty: 'Hard', content: "You have a query: `SELECT * FROM users WHERE last_name = 'Smith'`. `last_name` is not indexed. What type of scan will the database likely perform? What happens after you add an index?" }
+                        ]
+                    },
+                    {
+                        day: 32, topic: "NoSQL & Big Data Concepts",
+                        learn: ["SQL vs. NoSQL (CAP Theorem, BASE properties)", "Types: Document (MongoDB), Key-value (Redis), Columnar (Cassandra), Graph (Neo4j)", "Big Data ecosystem (Hadoop/HDFS, MapReduce)", "Apache Spark (RDDs, DataFrames, lazy evaluation)", "Data lakes vs. Data warehouses"],
+                        python: ["Use `pymongo` for basic CRUD ops in MongoDB", "Store and retrieve data from a Redis cache (`redis-py`)", "Word count with `pyspark` (basic intro)", "Read/write Parquet files with Spark/Pandas"],
+                        practice: "Design a MongoDB schema for a blog (posts, comments, tags)",
+                        review: "Advanced SQL",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the main difference between a SQL (Relational) and a NoSQL (e.g., Document) database? When would you use NoSQL?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is Redis? What is its primary use case (as a key-value store)?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is 'Spark'? What is it used for in the Big Data ecosystem?" },
+                            { type: 'code', difficulty: 'Medium', content: "Using `pymongo`, write the Python code to connect to a local MongoDB, select a database 'mydb' and collection 'users', and insert one document: `{'name': 'Alice', 'age': 30}`." },
+                            { type: 'question', difficulty: 'Hard', content: "What is the CAP Theorem (Consistency, Availability, Partition Tolerance)? How does it relate to the SQL vs. NoSQL debate?" }
+                        ]
+                    },
+                    {
+                        day: 33, topic: "Deep Learning Basics",
+                        learn: ["Neural networks (neurons, layers, weights, biases)", "Backpropagation (chain rule, high-level concept)", "Activation functions (ReLU, Sigmoid, Tanh, Softmax)", "CNN (convolution, pooling) and RNN (recurrent state, vanishing gradient)", "Loss functions (Cross-Entropy, MSE) and Optimizers (Adam, SGD)"],
+                        python: ["Build a simple Sequential model with `PyTorch` or `TensorFlow/Keras`", "Train a simple CNN on MNIST or Fashion-MNIST", "Train a simple RNN/LSTM on text data (sentiment analysis)", "Implement a custom `nn.Module` (PyTorch) or `tf.keras.Model` (TensorFlow)"],
+                        practice: "Train a CNN for image classification and an RNN for sentiment analysis",
+                        review: "All DBMS concepts",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is a neural network? What are 'layers' and 'neurons'?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is an 'activation function' (like ReLU)? Why are they necessary in a neural network?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is the difference between a Convolutional Neural Network (CNN) and a Recurrent Neural Network (RNN)? What type of data is each one specialized for?" },
+                            { type: 'code', difficulty: 'Hard', content: "Using `tensorflow.keras`, write the code to define a simple `Sequential` model with one `Dense` hidden layer (10 neurons, ReLU activation) and one `Dense` output layer (1 neuron, sigmoid activation)." },
+                            { type: 'question', difficulty: 'Hard', content: "What is 'backpropagation'? Explain its role in training a neural network at a high level." }
+                        ]
+                    },
+                    {
+                        day: 34, topic: "SQL & ML Project Day",
+                        learn: ["Building E2E pipelines (SQL -> ML)", "Feature engineering from relational data (e.g., aggregations)", "Serving models that require database lookups (feature retrieval)", "Data governance and quality checks in pipelines"],
+                        python: ["Build a project: query data from `sqlite`, preprocess with `pandas`, train with `sklearn`", "Create feature engineering logic using SQL `GROUP BY` and `JOIN`s", "Build a Flask API that takes a user ID, queries a DB for features, and returns a prediction", "Use `SQLAlchemy` for more robust DB interaction"],
+                        practice: "End-to-end project (e.g., customer churn prediction from DB)",
+                        review: "All Week 5",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Describe the steps of an end-to-end project that starts with data in a SQL database and ends with a trained model." },
+                            { type: 'question', difficulty: 'Medium', content: "What is a 'feature store'? Why is it useful in a production ML system?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write a Python script that connects to an `sqlite` database, runs `SELECT * FROM sales`, and loads the result into a pandas DataFrame." },
+                            { type: 'question', difficulty: 'Hard', content: "Design an ML system to predict customer churn. What features might you engineer from SQL tables like `users`, `orders`, and `support_tickets`? (e.g., 'total_orders_last_30_days')." },
+                            { type: 'code', difficulty: 'Hard', content: "How would you create a feature 'days_since_last_order' for all customers using SQL? (Assume a `customers` table and an `orders` table with `customer_id` and `order_date`)." }
+                        ]
+                    },
+                    {
+                        day: 35, topic: "REST & REVIEW (Sunday)",
+                        learn: ["Light review of Week 5", "Consolidate SQL/NoSQL/DL notes", "Compare/contrast SQL, NoSQL, Spark", "Review Spark DataFrame API basics"],
+                        python: ["10 SQL problems (Medium/Hard)", "5 NoSQL (MongoDB) query problems (e.g., aggregation framework)", "Debug a simple Keras/PyTorch model (shape errors, loss not decreasing)", "Write a simple PySpark DataFrame transformation"],
+                        practice: "Comprehensive Week 5 quiz (SQL, NoSQL, Spark, DL)",
+                        review: "Week 5 + weak areas from Weeks 1-4",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Review: What are the ACID properties?" },
+                            { type: 'code', difficulty: 'Medium', content: "Review: Write a SQL query to find all employees who have a salary greater than the average salary of their own department." },
+                            { type: 'question', difficulty: 'Medium', content: "Review: When would you use a NoSQL document database (like MongoDB) instead of a SQL database?" },
+                            { type: 'question', difficulty: 'Hard', content: "Review: Explain the difference between a CNN and an RNN and the types of problems they are designed to solve." },
+                            { type: 'code', difficulty: 'Hard', content: "Review: Write a SQL query using a window function to calculate a 7-day rolling average of sales from a `sales` table (`date`, `amount`)." }
+                        ]
+                    }
+                ]
+            },
+            6: {
+                title: "Integration & Interview Prep",
+                days: [
+                    {
+                        day: 36, topic: "End-to-End Project",
+                        learn: ["ML pipeline from scratch (data collection to API)", "Creating a strong project presentation (storytelling)", "Thorough documentation (`README.md`, docstrings)", "Using Git for version control (branching, merging)", "Containerization with Docker (basics)"],
+                        python: ["Complete a full project (data collection, cleaning, modeling, evaluation, API)", "Write a detailed `README.md` with setup and usage instructions", "Create a short slide deck presenting your results", "Push to GitHub (using feature branches)", "Write a simple `Dockerfile` for your Flask API"],
+                        practice: "Present project to a friend/mentor (and get feedback)",
+                        review: "All algorithms (Week 3)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What are the key sections you must include in a data science project's `README.md` file on GitHub?" },
+                            { type: 'question', difficulty: 'Medium', content: "You've built a model with 95% accuracy. What are the next 3-5 questions you should ask yourself before celebrating?" },
+                            { type: 'code', difficulty: 'Medium', content: "Write the basic `git` commands to initialize a new repository, add all your files, make a first commit, and push to a remote named 'origin'." },
+                            { type: 'question', difficulty: 'Hard', content: "How would you structure a 5-minute presentation of your end-to-end project for a non-technical audience?" },
+                            { type: 'question', difficulty: 'Hard', content: "What does it mean to 'version' your models? Why is this important, and what's a simple way to do it?" }
+                        ]
+                    },
+                    {
+                        day: 37, topic: "Case Studies & Behavioral",
+                        learn: ["A/B testing (design, hypothesis, significance, pitfalls)", "Product metrics (DAU, WAU, CTR, Churn, LTV)", "STAR method for behavioral questions", "Common case studies (e.g., 'investigate metric drop', 'launch new feature')", "Communicating technical concepts to non-technical stakeholders"],
+                        python: ["Analyze a sample A/B test dataset (calculate p-value, confidence interval)", "Calculate statistical significance (p-value)", "Simulate A/B test power analysis (`statsmodels`)", "Write SQL to calculate metrics like DAU, WAU, Churn"],
+                        practice: "Mock case study: 'Facebook's friend requests are down 5%. Investigate.' (Write down steps)",
+                        review: "System design (Week 4)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is the STAR method for answering behavioral questions?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is A/B testing? Design an A/B test for a new 'Add to Cart' button color on an e-commerce website. What is your hypothesis? What metric(s) would you track?" },
+                            { type: 'question', difficulty: 'Medium', content: "What is 'Churn Rate'? Why is it an important metric for subscription businesses?" },
+                            { type: 'question', difficulty: 'Hard', content: "What is a 'p-value' in the context of an A/B test? What is a 'confidence interval'? How do you use them to make a decision?" },
+                            { type: 'question', difficulty: 'Hard', content: "Behavioral: 'Tell me about a time you had to solve a complex problem with limited data.' (Practice answering this using the STAR method)." }
+                        ]
+                    },
+                    {
+                        day: 38, topic: "Speed Round & Weak Areas",
+                        learn: ["Rapid-fire explanations (e.g., 'Explain L1 vs L2 in 30s')", "Communication and clarity under pressure", "Deep dive into self-identified weak topics", "Python data structures (pros/cons of list, dict, set)", "Big O notation (time/space complexity)"],
+                        python: ["20 LeetCode problems (Easy/Medium) - focus on arrays, strings, dicts", "Implement 5 core algorithms/concepts from scratch (e.g., K-Means, Linear Regression, KNN)", "Quick debugging challenges", "Solve 2 common SQL queries (e.g., ranking, joins)"],
+                        practice: "4 hours dedicated to your weakest topic from Weeks 1-5",
+                        review: "ALL flashcards (spaced repetition)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "Speed round (30s): Explain what a p-value is." },
+                            { type: 'question', difficulty: 'Medium', content: "Speed round (45s): Explain the bias-variance tradeoff." },
+                            { type: 'code', difficulty: 'Medium', content: "Speed round (5 min): Write a Python function to check if a string is a palindrome." },
+                            { type: 'question', difficulty: 'Hard', content: "Speed round (60s): Explain the difference between Random Forest and Gradient Boosting." },
+                            { type: 'code', difficulty: 'Hard', content: "Speed round (10 min): Given two lists of numbers, find the intersection. (Solve it efficiently)." }
+                        ]
+                    },
+                    {
+                        day: 39, topic: "Mock Interviews",
+                        learn: ["Interview techniques (whiteboarding, pair programming)", "Stress management and building rapport", "Asking intelligent questions at the end", "Handling 'I don't know' gracefully", "Salary negotiation prep (high-level)"],
+                        python: ["2-hour mock interview (technical + behavioral) with a peer", "Focus on a different area (e.g., SQL, ML, Python, Case Study)", "Practice pair programming with a peer (e.g., on a LeetCode problem)", "Practice explaining your projects clearly and concisely"],
+                        practice: "Record yourself answering questions and review (or use AI speech coach)",
+                        review: "Note all gaps/weaknesses from mocks",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What are 3 good questions to ask your interviewer at the end of an interview?" },
+                            { type: 'question', difficulty: 'Medium', content: "Behavioral: 'Tell me about a project you are passionate about.' (Practice with STAR)." },
+                            { type: 'code', difficulty: 'Medium', content: "Technical: 'Given a pandas DataFrame, select all rows where the 'age' column is greater than 30 and the 'city' column is 'New York'." },
+                            { type: 'question', difficulty: 'Hard', content: "Case Study: 'We've seen a 10% drop in user engagement (time spent on app). How would you investigate this?'" },
+                            { type: 'code', difficulty: 'Hard', content: "Technical: 'Write a SQL query to find all users who have made a purchase in the last 30 days but not in the 30 days before that.' (Tables: `users`, `purchases(user_id, purchase_date)`)." }
+                        ]
+                    },
+                    {
+                        day: 40, topic: "Final Prep & Rest",
+                        learn: ["Building confidence (review your progress!)", "Interview logistics (check links, setup, environment)", "Light review of 'cheat sheet' (key formulas, definitions)", "Rest and relax (sleep is crucial!)", "Prepare 2-3 stories for behavioral questions"],
+                        python: ["30-minute light warmup (e.g., 3 LeetCode Easy, 1 SQL query)", "Review time/space complexity (Big O) of common operations", "Review common SQL patterns (JOINs, GROUP BY, Window Functions)", "Mentally walk through one of your projects"],
+                        practice: "Visualize yourself succeeding in the interview",
+                        review: "Key formulas/concepts one last time (e.g., Bayes', p-value, L1/L2)",
+                        aiCues: [
+                            { type: 'question', difficulty: 'Easy', content: "What is Big O notation? What is the time complexity of a dictionary/hashmap lookup?" },
+                            { type: 'question', difficulty: 'Easy', content: "What are you most proud of learning in these 40 days?" },
+                            { type: 'question', difficulty: 'Medium', content: "In one minute, explain your most complex project from your portfolio." },
+                            { type: 'question', difficulty: 'Medium', content: "Why do you want to be a data scientist?" },
+                            { type: 'question', difficulty: 'Hard', content: "Final check: Explain the difference between Precision and Recall, and how they relate to the F1-score. You've got this!" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const weeklyPlan = {};
+        [1, 2, 3, 4, 5, 6].forEach(week => {
+            weeklyPlan[week] = {
+                title: originalData[week]?.title || '',
+                days: originalData[week]?.days || [],
+            };
+        });
+
+        // --- STATE ---
+        let selectedWeek = 1;
+        let selectedDay = 1;
+        let activeTab = 'topics';
+        let focusMode = false;
+        let isLoading = false;
+        let modalContent = null; // { title: '', text: '' }
+        
+        // --- AI COACH STATE ---
+        let selectedCue = null; // { index: 0, cue: { type, difficulty, content } }
+        let cueAnswer = '';
+        let cueFeedback = '';
+        
+        // --- DS ASSISTANT STATE ---
+        let chatHistory = JSON.parse(localStorage.getItem('dsChatHistory')) || [];
+        
+        // --- NEW STATE for Progress ---
+        let activeStudyDay = 1; // This will be calculated on load
+
+        let expandedTimeSlot = null; // index
+        let completedConcepts = JSON.parse(localStorage.getItem('dsConceptsCompleted')) || {};
+
+        // Vanta.js effect references
+        let vantaEffectHeader = null;
+        let vantaEffectFooter = null;
+        let vantaEffectWeeks = null;
+        let vantaEffectBody = null;
+
+
+        // --- DOM ELEMENTS ---
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        
+        const headerSection = document.getElementById('header-section');
+        const focusModeExit = document.getElementById('focus-mode-exit');
+        const mainContentWrapper = document.getElementById('main-content-wrapper');
+        const weekSelectorContainer = document.getElementById('vanta-weeks');
+        
+        const weekSelectorEl = document.getElementById('week-selector');
+        const daySelectorEl = document.getElementById('day-selector');
+        const weekTitleEl = document.getElementById('week-title');
+        
+        const dayTopicTitleEl = document.getElementById('day-topic-title');
+        const dayQuoteEl = document.getElementById('day-quote');
+        const dayIconContainerEl = document.getElementById('day-icon-container');
+        
+        const progressTextEl = document.getElementById('progress-text');
+        const progressPercentEl = document.getElementById('progress-percent');
+        const progressBarFillEl = document.getElementById('progress-bar-fill');
+        
+        const tabBtnTopics = document.getElementById('tab-btn-topics');
+        const tabBtnSchedule = document.getElementById('tab-btn-schedule');
+        const tabBtnCoach = document.getElementById('tab-btn-coach');
+        const tabBtnAssistant = document.getElementById('tab-btn-assistant'); // New DOM Element
+        const tabContentEl = document.getElementById('tab-content');
+
+        const vantaHeaderRef = document.getElementById('vanta-header');
+        const vantaFooterRef = document.getElementById('vanta-footer');
+        const vantaMiddleRef = document.getElementById('vanta-middle');
+        const vantaWeeksRef = document.getElementById('vanta-weeks');
+        const vantaBodyRef = document.getElementById('vanta-body-background');
+
+        const statsDaysStarted = document.getElementById('stats-days-started');
+        const statsConceptsMastered = document.getElementById('stats-concepts-mastered');
+        const footerStatsDays = document.getElementById('footer-stats-days');
+        const footerStatsConcepts = document.getElementById('footer-stats-concepts');
+
+        // --- DATA HELPERS ---
+
+        /**
+         * Safely escapes HTML special characters to prevent XSS
+         */
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+
+        /**
+         * Basic markdown to HTML renderer for chat bubbles
+         */
+        function formatMarkdown(text) {
+            if (typeof text !== 'string') return '';
+            
+            let html = '\n' + text.trim() + '\n'; // Add padding for regex
+
+            // 1. Code Blocks (```...```)
+            // Must run first as it spans multiple lines
+            html = html.replace(/\n```(python|sql|javascript|bash|json|html|css)?\s*([\s\S]*?)```\n/g, (match, lang, code) => {
+                const escapedCode = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `\n<pre><code>${escapedCode.trim()}</code></pre>\n`;
+            });
+
+            // 2. Tables
+            // Must run before headers and lists
+            html = html.replace(/\n((?:\|[^\n\|]+\|\n)+)(\|[\s\:\-]+\|(?:\n|$))((?:\|[^\n\|]+\|\n?)*)/g, (match, headerRows, separatorRow, bodyRows) => {
+                let table = '<table class="w-full border-collapse border border-purple-200 my-4">';
+                
+                // Header
+                table += '<thead>';
+                headerRows.split('\n').filter(row => row.trim()).forEach(row => {
+                    table += '<tr>';
+                    row.split('|').filter(cell => cell.trim()).forEach(cell => {
+                        table += `<th class="border border-purple-300 p-2 bg-purple-50 text-left text-purple-900 font-semibold">${cell.trim()}</th>`;
+                    });
+                    table += '</tr>';
+                });
+                table += '</thead>';
+                
+                // Body
+                table += '<tbody>';
+                bodyRows.split('\n').filter(row => row.trim()).forEach(row => {
+                    table += '<tr>';
+                    row.split('|').filter((cell, i) => i > 0 && i < row.split('|').length - 1).forEach(cell => {
+                        // Apply inline markdown rules *inside* the cell
+                        let cellContent = cell.trim()
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                            .replace(/`(.*?)`/g, '<code>$1</code>');
+                        table += `<td class="border border-purple-200 p-2">${cellContent}</td>`;
+                    });
+                    table += '</tr>';
+                });
+                table += '</tbody>';
+                
+                return `\n${table}\n`;
+            });
+
+            // 3. Headers (###, ##, #)
+            html = html.replace(/\n### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/\n## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/\n# (.*$)/gim, '<h1>$1</h1>');
+            
+            // 4. Lists (Unordered: * or -)
+            html = html.replace(/\n\* (.*$)/gim, '<ul><li>$1</li></ul>');
+            html = html.replace(/\n- (.*$)/gim, '<ul><li>$1</li></ul>');
+            html = html.replace(/<\/ul>\n<ul>/gim, ''); // Combine adjacent lists
+
+            // 5. Lists (Ordered: 1.)
+            html = html.replace(/\n(\d+)\. (.*$)/gim, '<ol><li>$2</li></ol>'); // Simple ordered list
+            html = html.replace(/<\/ol>\n<ol>/gim, ''); // Combine adjacent lists
+
+            // 6. Bold (**...**) - Run this *after* tables
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // 7. Italics (*...*)
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // 8. Inline Code (`...`)
+            html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // 9. Paragraphs
+            // Split by newlines, wrap non-block elements in <p>
+            html = html.split('\n').map(line => {
+                line = line.trim();
+                if (line === '') return '';
+                if (line.startsWith('<h') || line.startsWith('<ul') || line.startsWith('<ol') || line.startsWith('<li') || line.startsWith('<pre') || line.startsWith('<table') || line.startsWith('</')) {
+                    return line;
+                }
+                return `<p>${line}</p>`;
+            }).join('');
+
+            // Cleanup: Combine adjacent lists that were separated by paragraphs
+            html = html.replace(/<\/ul><p><\/p><ul>/gim, '');
+            html = html.replace(/<\/ol><p><\/p><ol>/gim, '');
+
+            return html;
+        }
+
+        /**
+         * Gets completion stats for a single day
+         */
+        function getDayCompletion(dayInfo) {
+            if (!dayInfo) return { completed: 0, total: 0, percentage: 0 };
+            
+            // --- FIX: Count all concepts, including practice and review ---
+            // This now *exactly* matches the logic that creates the checkboxes
+            let total = 0;
+            const schedule = updateScheduleWithConcepts(dayInfo);
+            schedule.forEach(slot => {
+                if (slot.type !== 'break') {
+                    total += slot.concepts.filter(c => c.text && c.text.trim() !== "").length;
+                }
+            });
+            // --- End Fix ---
+            
+            const completed = (completedConcepts[dayInfo.day] || []).length;
+            
+            let percentage = 0;
+            if (total > 0) {
+                percentage = (completed / total) * 100;
+            } else if (completed > 0) {
+                // Handle 0-total days (though unlikely now)
+                percentage = 100;
+            }
+            
+            return { completed, total, percentage: Math.round(percentage) };
+        }
+
+        /**
+         * Gets aggregate completion stats for a whole week
+         */
+        function getWeekCompletion(weekNum) {
+            const weekData = weeklyPlan[weekNum];
+            if (!weekData) return { completed: 0, total: 0, percentage: 0 };
+            
+            let weekTotal = 0;
+            let weekCompleted = 0;
+            
+            weekData.days.forEach(dayInfo => {
+                const dayStats = getDayCompletion(dayInfo);
+                weekTotal += dayStats.total;
+                // Use the *count* of completed, not the percentage
+                weekCompleted += (completedConcepts[dayInfo.day] || []).length;
+            });
+            
+            const percentage = weekTotal > 0 ? (weekCompleted / weekTotal) * 100 : 0;
+            return { completed: weekCompleted, total: weekTotal, percentage: Math.round(percentage) };
+        }
+
+        /**
+         * Creates an SVG donut chart string
+         */
+        function createDonutChart(percentage) {
+            const perc = Math.round(Math.max(0, Math.min(100, percentage)));
+            const offset = 100 - perc;
+            let strokeColor = '#d1d5db'; // gray-300
+            if (perc === 100) {
+                strokeColor = '#22c55e'; // green-500
+            } else if (perc > 0) {
+                strokeColor = '#a855f7'; // purple-500
+            }
+            
+            return `
+            <svg class="w-12 h-12" viewBox="0 0 36 36">
+                <circle class="donut-chart-bg" cx="18" cy="18" r="15.9155" fill="transparent" stroke-width="3"></circle>
+                <circle class="donut-chart-fg"
+                    cx="18" cy="18" r="15.9155" fill="transparent"
+                    stroke="${strokeColor}"
+                    stroke-width="3"
+                    stroke-dasharray="100"
+                    stroke-dashoffset="${offset}"
+                ></circle>
+            </svg>
+            `;
+        }
+
+        const getDayData = () => {
+            const weekData = weeklyPlan[selectedWeek];
+            if (!weekData) return null;
+            // The day in the data is 1-indexed, but the array is 0-indexed
+            // We find the day by its `day` property, not its index in the week
+            const dayNum = (selectedWeek - 1) * 7 + selectedDay;
+            return weekData.days.find(d => d.day === dayNum);
+        };
+
+        const updateScheduleWithConcepts = (dayInfo) => {
+            if (!dayInfo) return hourlyScheduleTemplate;
+            
+            const learn = dayInfo.learn || [];
+            const python = dayInfo.python || [];
+            
+            // --- FIX 1: Split concepts to avoid duplicates ---
+            // Map concepts to objects with unique IDs
+            const learnConcepts = learn.map((text, idx) => ({ text, id: `learn-${idx}` }));
+            const pythonConcepts = python.map((text, idx) => ({ text, id: `python-${idx}` }));
+            
+            // Split concepts for different schedule slots
+            const learn1 = learnConcepts.slice(0, Math.ceil(learnConcepts.length / 2));
+            const learn2 = learnConcepts.slice(Math.ceil(learnConcepts.length / 2));
+            
+            const python1 = pythonConcepts.slice(0, Math.ceil(pythonConcepts.length / 2));
+            const python2 = pythonConcepts.slice(Math.ceil(pythonConcepts.length / 2));
+
+            let learnSlot = 1;
+            let codeSlot = 1;
+
+            return hourlyScheduleTemplate.map(slot => {
+                if (slot.type === 'learn') {
+                    if (learnSlot === 1) {
+                        learnSlot++;
+                        return { ...slot, concepts: learn1 };
+                    }
+                    return { ...slot, concepts: learn2 };
+                } else if (slot.type === 'code') {
+                    if (codeSlot === 1) {
+                        codeSlot++;
+                        return { ...slot, concepts: python1 };
+                    }
+                    return { ...slot, concepts: python2 };
+                } else if (slot.type === 'practice') {
+                    // Also give practice/review a unique ID
+                    const practiceText = dayInfo.practice || '';
+                    return { ...slot, concepts: [{ text: practiceText, id: 'practice-0' }] };
+                } else if (slot.type === 'review') {
+                    const reviewText = dayInfo.review || '';
+                    return { ...slot, concepts: [{ text: reviewText, id: 'review-0' }] };
+                }
+                return slot;
+            });
+        };
+
+        // --- STATE MUTATORS (Event Handlers) ---
+        window.selectWeek = (week) => {
+            selectedWeek = week;
+            selectedDay = 1; // Default to the first day of the week
+            localStorage.setItem('dsLastVisited', JSON.stringify({ week: selectedWeek, day: selectedDay }));
+            resetTabState();
+            updateUI();
+        };
+
+        window.selectDay = (day) => {
+            selectedDay = day;
+            localStorage.setItem('dsLastVisited', JSON.stringify({ week: selectedWeek, day: selectedDay }));
+            // Note: selectedDay is now 1-7 (index in the week)
+            // We need to calculate the absolute day number inside getDayData
+            resetTabState();
+            updateUI();
+        };
+        
+        window.setActiveTab = (tab) => {
+            activeTab = tab;
+            updateUI();
+        };
+
+        window.setFocusMode = (isFocused) => {
+            focusMode = isFocused;
+            updateUI();
+        };
+
+        window.handleToggleConcept = (conceptId) => {
+            const currentDayInfo = getDayData();
+            if (!currentDayInfo) return;
+            const dayKey = currentDayInfo.day; // Use the absolute day number
+            const currentConcepts = completedConcepts[dayKey] || [];
+            
+            if (currentConcepts.includes(conceptId)) {
+                completedConcepts[dayKey] = currentConcepts.filter(id => id !== conceptId);
+            } else {
+                completedConcepts[dayKey] = [...currentConcepts, conceptId];
+            }
+            
+            localStorage.setItem('dsConceptsCompleted', JSON.stringify(completedConcepts));
+            updateUI();
+        };
+        
+        window.toggleTimeSlot = (idx) => {
+            expandedTimeSlot = (expandedTimeSlot === idx) ? null : idx;
+            renderSchedule(); // Just re-render the schedule
+            lucide.createIcons();
+        };
+
+        window.closeModal = () => {
+            modalContent = null;
+            updateUI();
+        };
+        
+        const showModal = (title, text) => {
+            modalContent = { title, text };
+            updateUI();
+        }
+
+        const setIsLoading = (loading) => {
+            isLoading = loading;
+            updateUI();
+        }
+        
+        const resetTabState = () => {
+            activeTab = 'topics';
+            selectedCue = null;
+            cueAnswer = '';
+            cueFeedback = '';
+            expandedTimeSlot = null;
+            // We DON'T reset chatHistory here, as it's persistent
+        }
+
+        // --- NEW FUNCTION ---
+        window.handleExplainConcept = async (concept) => {
+            const response = await callGemini(
+                `Please explain this data science concept clearly and concisely: "${concept}"`,
+                "You are a friendly and expert data science tutor. Explain the concept clearly, using analogies if helpful. Keep it concise."
+            );
+            if (response) {
+                showModal(`Explanation: ${concept}`, response);
+            }
+        };
+
+        // --- RENDER FUNCTIONS ---
+        
+        /**
+         * Main UI update function. Called after any state change.
+         */
+        const updateUI = () => {
+            renderWeekSelector();
+            renderDayHeader();
+            renderTabContent();
+            renderUIElements();
+            updateStats();
+            lucide.createIcons();
+        };
+        
+        /**
+         * Renders the Week and Day selector buttons
+         */
+        const renderWeekSelector = () => {
+            // Render Week Buttons
+            let weekHtml = '';
+            for (let i = 1; i <= 6; i++) {
+                const isSelected = selectedWeek === i;
+                const weekStats = getWeekCompletion(i);
+                const chartSvg = createDonutChart(weekStats.percentage);
+                
+                // Check if the active study day is in this week
+                const isTodayWeek = activeStudyDay >= (i - 1) * 7 + 1 && activeStudyDay <= i * 7;
+                
+                weekHtml += `
+                    <button
+                        onclick="selectWeek(${i})"
+                        class="relative p-4 rounded-lg font-bold transition-all duration-300 text-sm md:text-base transform hover:scale-105 ${
+                            isSelected
+                                ? 'bg-gradient-to-r from-pink-400 to-purple-500 text-white shadow-lg'
+                                : 'bg-white/60 text-gray-700 hover:bg-white/90'
+                        } ${
+                            isTodayWeek && !isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                        }"
+                    >
+                        <div class="absolute inset-0 flex items-center justify-center">${chartSvg}</div>
+                        <span class="relative z-10 text-lg font-bold ${isSelected ? 'text-white' : 'text-purple-800'}">W${i}</span>
+                    </button>
+                `;
+            }
+            weekSelectorEl.innerHTML = weekHtml;
+
+            // Render Day Buttons
+            const weekData = weeklyPlan[selectedWeek];
+            if (!weekData) return;
+            
+            weekTitleEl.textContent = `Week ${selectedWeek}: ${weekData.title}`;
+            
+            let dayHtml = '';
+            // `day` is now 1-7, representing the day *of the week*
+            weekData.days.forEach((dayInfo, idx) => {
+                const dayOfWeek = idx + 1; // 1-7
+                const isSelected = selectedDay === dayOfWeek;
+                
+                // Get stats for this specific day
+                const dayStats = getDayCompletion(dayInfo);
+                const isCompleted = dayStats.percentage === 100;
+                
+                // Check if this is the active study day
+                const isToday = dayInfo.day === activeStudyDay;
+                
+                dayHtml += `
+                    <button
+                        onclick="selectDay(${dayOfWeek})"
+                        class="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg font-bold transition-all duration-200 text-sm md:text-base transform hover:scale-105 ${
+                            isSelected
+                                ? 'bg-purple-600 text-white shadow-md'
+                                : 'bg-white/70 text-purple-700'
+                        } ${
+                            isToday && !isSelected ? 'ring-2 ring-blue-500' : '' // Highlight for "today"
+                        }"
+                    >
+                        <span>${dayOfWeek === 7 ? "Sun" : `D${dayOfWeek}`}</span>
+                        ${isCompleted ? '<i data-lucide="check" class="w-4 h-4 text-green-500"></i>' : ''}
+                    </button>
+                `;
+            });
+            daySelectorEl.innerHTML = dayHtml;
+        };
+
+        /**
+         * Renders the header of the main content card (Day, Topic, Quote, Progress)
+         */
+        const renderDayHeader = () => {
+            const dayInfo = getDayData();
+            if (!dayInfo) {
+                // Handle case where day info might be missing (e.g., bad data)
+                dayTopicTitleEl.textContent = "Select a day";
+                dayQuoteEl.textContent = "";
+                dayIconContainerEl.innerHTML = "";
+                progressTextEl.textContent = "Progress: 0 / 0 Concepts Mastered";
+                progressPercentEl.textContent = `0%`;
+                progressBarFillEl.style.width = `0%`;
+                return;
+            }
+
+            const isSunday = selectedDay === 7;
+            const todaysQuote = motivationalQuotes[dayInfo.day - 1] || "";
+            
+            dayTopicTitleEl.textContent = `Day ${dayInfo.day}: ${dayInfo.topic}`;
+            dayQuoteEl.textContent = `"${todaysQuote}"`;
+            
+            dayIconContainerEl.innerHTML = isSunday 
+                ? `<i data-lucide="sparkles" class="text-purple-400 flex-shrink-0 animate-bounce" style="width: 40px; height: 40px;"></i>` 
+                : '';
+                
+            // Update Progress Bar
+            const dayStats = getDayCompletion(dayInfo);
+            progressTextEl.textContent = `Progress: ${dayStats.completed} / ${dayStats.total} Concepts Mastered`;
+            progressPercentEl.textContent = `${dayStats.percentage}%`;
+            progressBarFillEl.style.width = `${dayStats.percentage}%`;
+        };
+
+        /**
+         * Renders the content for the active tab (Topics, Schedule, or Coach)
+         */
+        const renderTabContent = () => {
+            // Update Tab Button Styles
+            [tabBtnTopics, tabBtnSchedule, tabBtnCoach, tabBtnAssistant].forEach(btn => {
+                btn.classList.remove('text-pink-700', 'border-pink-500', 'text-blue-700', 'border-blue-500');
+                btn.classList.add('text-gray-500', 'border-transparent', 'hover:text-gray-800');
+            });
+            
+            if (activeTab === 'topics') {
+                tabBtnTopics.classList.add('text-pink-700', 'border-pink-500');
+                tabBtnTopics.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-800');
+                renderTopics();
+            } else if (activeTab === 'schedule') {
+                tabBtnSchedule.classList.add('text-pink-700', 'border-pink-500');
+                tabBtnSchedule.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-800');
+                renderSchedule();
+            } else if (activeTab === 'coach') {
+                tabBtnCoach.classList.add('text-pink-700', 'border-pink-500');
+                tabBtnCoach.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-800');
+                renderAICoach();
+            } else if (activeTab === 'assistant') { // New 'else if' block
+                tabBtnAssistant.classList.add('text-blue-700', 'border-blue-500');
+                tabBtnAssistant.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-800');
+                renderDSAssistant();
+            }
+        };
+
+        /**
+         * Renders the 'Topics' tab content
+         */
+        const renderTopics = () => {
+            const dayInfo = getDayData();
+            if (!dayInfo) {
+                tabContentEl.innerHTML = '';
+                return;
+            }
+
+            tabContentEl.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                    <!-- Learning Objectives -->
+                    <div class="bg-white/80 rounded-xl p-5 border-2 border-blue-200/30">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="book-open" class="text-blue-600" style="width: 24px; height: 24px;"></i>
+                            <h3 class="text-lg font-bold text-blue-800">Learning Objectives</h3>
+                        </div>
+                        <ul class="space-y-2">
+                            ${dayInfo.learn.map(item => `
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="check-circle" class="text-green-600 mt-1 flex-shrink-0" style="width: 16px; height: 16px;"></i>
+                                    <span class="text-gray-700">${item}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- Python/SQL Practice -->
+                    <div class="bg-white/80 rounded-xl p-5 border-2 border-purple-200/30">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="code" class="text-purple-600" style="width: 24px; height: 24px;"></i>
+                            <h3 class="text-lg font-bold text-purple-800">Practice Problems</h3>
+                        </div>
+                        <ul class="space-y-2">
+                            ${dayInfo.python.map((item, idx) => `
+                                <li class="flex items-start gap-3">
+                                    <span class="text-purple-600 font-bold">${idx + 1}.</span>
+                                    <span class="text-gray-700">${item}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- Practice Application -->
+                    <div class="bg-white/80 rounded-xl p-5 border-2 border-orange-200/30">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="target" class="text-orange-600" style="width: 24px; height: 24px;"></i>
+                            <h3 class="text-lg font-bold text-orange-800">Practice & Application</h3>
+                        </div>
+                        <p class="text-gray-700">${dayInfo.practice}</p>
+                    </div>
+
+                    <!-- Review -->
+                    <div class="bg-white/80 rounded-xl p-5 border-2 border-pink-200/30">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="activity" class="text-pink-600" style="width: 24px; height: 24px;"></i>
+                            <h3 class="text-lg font-bold text-pink-800">Review & Consolidate</h3>
+                        </div>
+                        <p class="text-gray-700">${dayInfo.review}</p>
+                    </div>
+                </div>
+            `;
+        };
+        
+        /**
+         * Renders the 'Schedule' tab content
+         */
+        const renderSchedule = () => {
+            const dayInfo = getDayData();
+            const schedule = updateScheduleWithConcepts(dayInfo);
+            
+            tabContentEl.innerHTML = `
+                <div class="animate-fade-in">
+                    <h3 class="text-2xl font-semibold text-pink-900 mb-6 flex items-center gap-2">
+                        <i data-lucide="clock" class="text-pink-700" style="width: 28px; height: 28px;"></i>
+                        Today's Schedule (6:00 AM - 6:00 PM)
+                    </h3>
+                    <div class="space-y-3">
+                        ${schedule.map((slot, idx) => {
+                            const isBreak = slot.type === 'break';
+                            const bgColor = isBreak ? 'bg-orange-50/70' : 'bg-pink-50/70';
+                            const borderColor = isBreak ? 'border-orange-200/40' : 'border-pink-200/40';
+                            const isExpanded = expandedTimeSlot === idx;
+                            
+                            const conceptsHtml = (isExpanded && !isBreak && slot.concepts.length > 0) ? `
+                                <div class="px-4 pb-4 border-t-2 border-pink-200/35 bg-pink-50/50 animate-fade-in">
+                                    <div class="mt-4">
+                                        <p class="text-xs font-bold text-pink-800 mb-3">Topics & Concepts to Master:</p>
+                                        <div class="space-y-2">
+                                            ${slot.concepts.filter(c => c.text).map((concept, cIdx) => {
+                                                // --- FIX 1 (cont.): Use the unique concept.id ---
+                                                const conceptId = concept.id;
+                                                const isChecked = (completedConcepts[dayInfo?.day] || []).includes(conceptId);
+                                                // We need to escape the concept string for the onclick handler
+                                                const escapedConcept = concept.text.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                                                
+                                                return `
+                                                    <div class="flex items-center gap-3 group">
+                                                        <label class="flex items-center gap-3 cursor-pointer hover:bg-pink-200/25 p-2 rounded transition-all flex-1">
+                                                            <input
+                                                                type="checkbox"
+                                                                ${isChecked ? 'checked' : ''}
+                                                                onchange="handleToggleConcept('${conceptId}')"
+                                                                class="w-5 h-5 rounded border-pink-300"
+                                                            />
+                                                            <span class="text-sm flex-1 ${isChecked ? 'text-pink-700 line-through font-medium' : 'text-gray-700'}">
+                                                                ${concept.text}
+                                                            </span>
+                                                            ${isChecked ? `<i data-lucide="check-circle" class="text-green-600 flex-shrink-0" style="width: 18px; height: 18px;"></i>` : ''}
+                                                        </label>
+                                                        <button 
+                                                            class="p-2 text-purple-500 rounded-full hover:bg-purple-100/50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            onclick="handleExplainConcept('${escapedConcept}')"
+                                                            title="Explain this concept">
+                                                            <i data-lucide="brain-circuit" style="width: 18px; height: 18px;"></i>
+                                                        </button>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            ` : '';
+
+                            return `
+                                <div class="rounded-xl border-2 ${borderColor} overflow-hidden transition-all ${bgColor} backdrop-blur-sm">
+                                    <button
+                                        onclick="toggleTimeSlot(${idx})"
+                                        class="w-full p-4 flex items-center justify-between cursor-pointer"
+                                    >
+                                        <div class="flex items-center gap-4 flex-1 text-left">
+                                            <div class="p-2 rounded-lg ${isBreak ? 'bg-orange-200/40' : 'bg-pink-200/35'}">
+                                                <i data-lucide="${slot.icon}" class="${isBreak ? 'text-orange-600' : 'text-pink-600'}" style="width: 24px; height: 24px;"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-lg ${isBreak ? 'text-orange-800' : 'text-pink-800'}">
+                                                    ${slot.time}
+                                                </p>
+                                                <p class="text-sm ${isBreak ? 'text-orange-700' : 'text-pink-700'}">
+                                                    ${slot.activity}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold ${isBreak ? 'bg-orange-300/40 text-orange-800' : 'bg-pink-300/35 text-pink-800'}">
+                                            ${slot.duration} min
+                                        </span>
+                                    </button>
+                                    ${conceptsHtml}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        };
+
+        /**
+         * Renders the 'AI Coach' tab content
+         */
+        const renderAICoach = () => {
+            const dayInfo = getDayData();
+            if (!dayInfo || !dayInfo.aiCues) {
+                tabContentEl.innerHTML = `<p>No AI Coach content for this day.</p>`;
+                return;
+            }
+
+            let contentHtml = '';
+
+            if (!selectedCue) {
+                // --- Show the list of cues ---
+                contentHtml = `
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Today's Challenges</h3>
+                    <p class="text-gray-600 mb-6">Select a challenge to test your knowledge. The AI coach will provide feedback on your answer.</p>
+                    <div class="space-y-4">
+                        ${dayInfo.aiCues.map((cue, idx) => {
+                            const isCode = cue.type === 'code';
+                            const icon = isCode ? 'code' : 'help-circle';
+                            const difficultyColor = {
+                                'Easy': 'text-green-600 bg-green-100/50',
+                                'Medium': 'text-yellow-600 bg-yellow-100/50',
+                                'Hard': 'text-red-600 bg-red-100/50'
+                            }[cue.difficulty] || 'text-gray-600 bg-gray-100/50';
+
+                            return `
+                                <button
+                                    onclick="selectCue(${idx})"
+                                    class="w-full flex items-center justify-between p-5 bg-white/80 rounded-xl border-2 border-pink-200/30 hover:border-pink-400/50 hover:bg-white transition-all shadow-sm"
+                                >
+                                    <div class="flex items-center gap-4 text-left">
+                                        <i data-lucide="${icon}" class="text-pink-600" style="width: 24px; height: 24px;"></i>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">${isCode ? 'Code Challenge' : 'Concept Question'}</p>
+                                            <p class="text-sm text-gray-600 truncate max-w-md md:max-w-lg">${cue.content}</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold ${difficultyColor}">${cue.difficulty}</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                // --- Show the selected cue and answer area ---
+                const cue = selectedCue.cue;
+                const isCode = cue.type === 'code';
+                
+                contentHtml = `
+                    <div class="space-y-6">
+                        <button onclick="clearSelectedCue()" class="flex items-center gap-2 text-sm text-purple-700 font-semibold hover:text-purple-900">
+                            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                            Back to All Challenges
+                        </button>
+                    
+                        <div class="bg-gradient-to-r from-pink-100/30 to-purple-100/25 rounded-xl p-7 border-2 border-pink-300/35">
+                            <p class="font-bold text-pink-800 text-lg mb-3">${isCode ? 'Code Challenge' : 'Interview Question'} (${cue.difficulty}):</p>
+                            ${isCode 
+                                ? `<pre class="coach-code-block"><code>${escapeHTML(cue.content)}</code></pre>`
+                                : `<p class="text-gray-800 text-base">${escapeHTML(cue.content)}</p>`
+                            }
+                        </div>
+
+                        <div>
+                            <label for="cueAnswer" class="block text-base font-bold text-gray-700 mb-3">Your ${isCode ? 'Solution' : 'Answer'}:</label>
+                            <textarea
+                                id="cueAnswer"
+                                rows="${isCode ? 12 : 8}"
+                                class="w-full p-4 border-2 border-pink-300/35 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 resize-none text-base ${isCode ? 'font-mono' : 'font-sans'}"
+                                placeholder="Type your detailed ${isCode ? 'code or explanation' : 'answer'} here..."
+                                oninput="handleCueAnswerInput(this.value)"
+                            >${cueAnswer}</textarea>
+                        </div>
+                        
+                        <button
+                            id="feedback-button"
+                            onclick="handleGetFeedback()"
+                            ${!cueAnswer || isLoading ? 'disabled' : ''}
+                            class="w-full flex items-center justify-center gap-3 px-6 py-5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-bold hover:shadow-lg transition-all text-lg shadow-lg disabled:opacity-50"
+                        >
+                            <i data-lucide="send" style="width: 24px; height: 24px;"></i>
+                            Get AI Coach Feedback
+                        </button>
+
+                        ${cueFeedback ? `
+                            <div class="bg-gradient-to-r from-blue-100/30 to-purple-100/25 rounded-xl p-7 border-2 border-blue-300/35">
+                                <p class="font-bold text-blue-800 mb-4 text-lg">Coach's Detailed Feedback:</p>
+                                <!-- Apply formatMarkdown function here and remove whitespace-pre-wrap -->
+                                <div class="text-gray-800 text-base">${formatMarkdown(cueFeedback)}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            tabContentEl.innerHTML = `
+                <div class="animate-fade-in max-w-3xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                            <i data-lucide="bot" class="text-pink-600 animate-bounce" style="width: 32px; height: 32px;"></i>
+                            AI Coach
+                        </h2>
+                        <span class="text-lg font-semibold text-pink-800">${dayInfo.topic}</span>
+                    </div>
+                    ${contentHtml}
+                </div>
+            `;
+        };
+
+        /**
+         * Renders the 'DS Assistant' tab content (NEW)
+         */
+        const renderDSAssistant = () => {
+            tabContentEl.innerHTML = `
+                <div class="animate-fade-in max-w-3xl mx-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                            <i data-lucide="message-circle" class="text-blue-600" style="width: 32px; height: 32px;"></i>
+                            DS Assistant
+                        </h2>
+                        <button
+                            onclick="clearChatHistory()"
+                            class="flex items-center gap-2 text-sm text-gray-500 hover:text-red-500 font-semibold"
+                        >
+                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                            Clear Chat
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-6">Ask any data science questions you have. Your conversation will be saved.</p>
+                    
+                    <!-- Chat History -->
+                    <div id="chat-history-container" class="chat-container flex flex-col space-y-4">
+                        ${chatHistory.map(msg => `
+                            <div class="chat-bubble ${msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-model'}">
+                                ${msg.role === 'user' ? escapeHTML(msg.text) : formatMarkdown(msg.text)}
+                            </div>
+                        `).join('')}
+                        ${chatHistory.length === 0 ? '<p class="text-center text-gray-500">No messages yet. Ask something below!</p>' : ''}
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="space-y-4">
+                        <textarea
+                            id="ds-assistant-input"
+                            rows="4"
+                            class="w-full p-4 border-2 border-blue-300/35 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base"
+                            placeholder="Ask about a concept, debug code, or ask for a new example..."
+                        ></textarea>
+                        <button
+                            onclick="handleAskAssistant()"
+                            class="w-full flex items-center justify-center gap-3 px-6 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-bold hover:shadow-lg transition-all text-lg shadow-lg disabled:opacity-50"
+                        >
+                            <i data-lucide="send" style="width: 24px; height: 24px;"></i>
+                            Ask Assistant
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll chat to bottom
+            const chatContainer = document.getElementById('chat-history-container');
+            if(chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        };
+
+        
+        /**
+         * Shows/hides UI elements based on global state (loading, modal, focus)
+         */
+        const renderUIElements = () => {
+            // Loading Overlay
+            loadingOverlay.classList.toggle('hidden', !isLoading);
+            
+            // Modal
+            if (modalContent) {
+                modalTitle.textContent = modalContent.title;
+                modalText.textContent = modalContent.text;
+                modalOverlay.classList.remove('hidden');
+            } else {
+                modalOverlay.classList.add('hidden');
+            }
+            
+            // Focus Mode
+            headerSection.classList.toggle('hidden', focusMode);
+            focusModeExit.classList.toggle('hidden', !focusMode);
+            weekSelectorContainer.classList.toggle('hidden', focusMode);
+            
+            if (focusMode) {
+                mainContentWrapper.classList.add('max-w-4xl', 'flex', 'flex-col', 'items-center');
+                mainContentWrapper.classList.remove('max-w-7xl');
+            } else {
+                mainContentWrapper.classList.remove('max-w-4xl', 'flex', 'flex-col', 'items-center');
+                mainContentWrapper.classList.add('max-w-7xl');
+            }
+        };
+
+        /**
+         * Updates global stats in header and footer
+         */
+        const updateStats = () => {
+            const daysStarted = Object.keys(completedConcepts).length;
+            const conceptsMastered = Object.values(completedConcepts).reduce((sum, concepts) => sum + concepts.length, 0);
+            
+            statsDaysStarted.textContent = daysStarted;
+            statsConceptsMastered.textContent = conceptsMastered;
+            footerStatsDays.textContent = daysStarted;
+            footerStatsConcepts.textContent = conceptsMastered;
+        };
+        
+        // --- API CALLS ---
+        
+        /**
+         * Calls the Gemini API.
+         * IMPORTANT: This uses an empty API key string. The environment (like Canvas)
+         * must provide the actual key.
+         */
+        const callGemini = async (userPrompt, systemPrompt, maxRetries = 3) => {
+            setIsLoading(true);
+            
+            // Per instructions, apiKey is an empty string, relying on the runtime environment.
+            const apiKey = "AIzaSyDpiPeqrjhs5B3KXVB8xeEkMUTyz6GA_t4"; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+            };
+
+            if (systemPrompt) {
+                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
+            }
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        setIsLoading(false);
+                        return result.candidates[0].content.parts[0].text;
+                    }
+                    throw new Error("Invalid response structure");
+                } catch (error) {
+                    console.error(`API attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) {
+                        setIsLoading(false);
+                        showModal("API Error", `Failed: ${error.message}`);
+                        return null;
+                    }
+                    // Exponential backoff
+                    await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+                }
+            }
+        };
+
+        // --- AI COACH HANDLERS ---
+        window.selectCue = (index) => {
+            const dayInfo = getDayData();
+            if (!dayInfo || !dayInfo.aiCues[index]) return;
+            
+            selectedCue = {
+                index: index,
+                cue: dayInfo.aiCues[index]
+            };
+            cueAnswer = '';
+            cueFeedback = '';
+            updateUI();
+        };
+
+        window.clearSelectedCue = () => {
+            selectedCue = null;
+            cueAnswer = '';
+            cueFeedback = '';
+            updateUI();
+        };
+
+        window.handleGetFeedback = async () => {
+            const answer = document.getElementById('cueAnswer')?.value;
+            if (!answer || !selectedCue) {
+                showModal("Hold on!", "Please provide an answer first.");
+                return;
+            }
+            cueAnswer = answer; // Ensure state is in sync
+            
+            const cue = selectedCue.cue;
+            const isCode = cue.type === 'code';
+            
+            const prompt = `
+                **The Challenge:**
+                ${cue.content}
+
+                **My ${isCode ? 'Solution' : 'Answer'}:**
+                ${cueAnswer}
+
+                **Please provide feedback:**
+            `;
+            
+            const systemPrompt = isCode
+                ? "You are an expert data science code reviewer. Be constructive. Analyze the code for accuracy, efficiency, and best practices. Use bullet points for your feedback. If the code is correct, explain *why* it's a good solution."
+                : "You are an expert data science interviewer. Be constructive. Analyze the answer for accuracy, clarity, and structure. Use bullet points for your feedback.";
+            
+            const response = await callGemini(prompt, systemPrompt);
+            if (response) {
+                cueFeedback = response;
+                updateUI();
+            }
+        };
+
+        // --- FIX 2: Add input handler to enable/disable button ---
+        window.handleCueAnswerInput = (value) => {
+            cueAnswer = value;
+            const feedbackButton = document.getElementById('feedback-button');
+            if (feedbackButton) {
+                feedbackButton.disabled = !cueAnswer || isLoading;
+            }
+        };
+
+        // --- DS ASSISTANT HANDLERS (NEW) ---
+        window.handleAskAssistant = async () => {
+            const inputEl = document.getElementById('ds-assistant-input');
+            if (!inputEl) return;
+            const query = inputEl.value;
+            if (!query.trim()) {
+                showModal("Hold on!", "Please type a question first.");
+                return;
+            }
+            
+            // Add user message to chat
+            chatHistory.push({ role: 'user', text: query });
+            localStorage.setItem('dsChatHistory', JSON.stringify(chatHistory));
+            inputEl.value = ''; // Clear input
+            updateUI(); // Re-render to show user message
+            
+            const systemPrompt = "You are a helpful and friendly Data Science assistant. Answer the user's questions clearly and concisely. Format code snippets using markdown (e.g., ```python ... ```). You must also format bold text, lists, and tables using markdown.";
+            const response = await callGemini(query, systemPrompt);
+            
+            if (response) {
+                chatHistory.push({ role: 'model', text: response });
+                localStorage.setItem('dsChatHistory', JSON.stringify(chatHistory));
+                updateUI(); // Re-render to show model response
+            }
+        };
+
+        window.clearChatHistory = () => {
+            chatHistory = [];
+            localStorage.setItem('dsChatHistory', JSON.stringify(chatHistory));
+            updateUI();
+        };
+        
+        // --- VANTA.JS & INITIALIZATION ---
+        
+        /**
+         * Dynamically loads a script and returns a promise
+         */
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.onload = resolve;
+                script.onerror = (e) => reject(new Error(`Failed to load script: ${src}`)); // Improved error handling
+                document.head.appendChild(script);
+            });
+        };
+
+        /**
+         * Loads all Vanta effects
+         */
+        const loadVantaEffects = async () => {
+            try {
+                // Load Vanta scripts sequentially
+                await loadScript('https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js');
+                if (window.VANTA && vantaHeaderRef) {
+                    vantaEffectHeader = window.VANTA.CLOUDS({
+                        el: vantaHeaderRef,
+                        mouseControls: true,
+                        touchControls: true,
+                        gyroControls: false,
+                        minHeight: 200,
+                        minWidth: 200,
+                        scale: 1.0,
+                        speed: 1.10,
+                        skyColor: 0xe6c7e6, // Light purple sky
+                        cloudColor: 0xdab7f2, // Light pink cloud
+                        cloudShadowColor: 0x520aaa,
+                        sunColor: 0x62447a,
+                        sunGlareColor: 0x2f2e2f
+                    });
+                }
+
+                await loadScript('https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js');
+                if (window.VANTA && vantaFooterRef) {
+                    vantaEffectFooter = window.VANTA.FOG({
+                        el: vantaFooterRef,
+                        mouseControls: true,
+                        touchControls: true,
+                        gyroControls: false,
+                        minHeight: 200.00,
+                        minWidth: 200.00,
+                        highlightColor: 0xc459ed,
+                        midtoneColor: 0x924cac,
+                        lowlightColor: 0x846ccf,
+                        baseColor: 0xdac0e3, // Light purple base
+                        blurFactor: 0.61,
+                        speed: 2.00,
+                        zoom: 1.20
+                    });
+                }
+                
+                if (window.VANTA && vantaBodyRef) {
+                    vantaEffectBody = window.VANTA.FOG({
+                        el: vantaBodyRef,
+                        mouseControls: true,
+                        touchControls: true,
+                        gyroControls: false,
+                        minHeight: 200.00,
+                        minWidth: 200.00,
+                        highlightColor: 0xe8e8e8,
+                        midtoneColor: 0xf0b8e9,
+                        lowlightColor: 0xdab0f2,
+                        blurFactor: 0.82,
+                        zoom: 1.30
+                    });
+                }
+                
+                await loadScript('https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js');
+                if (window.VANTA && vantaWeeksRef) {
+                     vantaEffectWeeks = window.VANTA.BIRDS({
+                        el: vantaWeeksRef,
+                        mouseControls: true,
+                        touchControls: true,
+                        gyroControls: false,
+                        minHeight: 200.00,
+                        minWidth: 200.00,
+                        scale: 1.00,
+                        scaleMobile: 1.00,
+                        backgroundColor: 0xfad3f7, // Light pink background
+                        color1: 0xad3cf2,
+                        color2: 0x8125e8,
+                        birdSize: 2.30,
+                        wingSpan: 20.00,
+                        speedLimit: 4.00,
+                        separation: 75.00,
+                        alignment: 48.00,
+                        cohesion: 80.00,
+                        quantity: 4.00
+                    });
+                }
+
+            } catch (error) {
+                console.error("Failed to load Vanta scripts:", error);
+            }
+        };
+
+        /**
+         * Generates the blossom fall animation
+         */
+        const createBlossoms = () => {
+            const container = document.getElementById('blossom-container');
+            const template = document.getElementById('blossom-template');
+            if (!container || !template) return;
+            
+            for (let i = 0; i < 15; i++) {
+                const blossom = template.content.cloneNode(true).firstElementChild;
+                blossom.style.left = `${Math.random() * 100}%`;
+                blossom.style.animationDelay = `${i * 0.3}s`;
+                blossom.style.animationDuration = `${8 + i * 0.5}s`;
+                container.appendChild(blossom);
+            }
+        };
+
+        /**
+         * Page Load Initializer
+         */
+        window.onload = () => {
+            // --- Calculate Active Study Day ---
+            let startDate = localStorage.getItem('dsStartDate');
+            if (!startDate) {
+                // If no start date, set it to today. This is Day 1.
+                startDate = new Date().toISOString();
+                localStorage.setItem('dsStartDate', startDate);
+            }
+            const daysElapsed = Math.floor((new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24));
+            activeStudyDay = Math.max(1, Math.min(40, daysElapsed + 1)); // Clamp between 1 and 40
+
+            // --- Load Last Visited Page ---
+            const lastVisited = JSON.parse(localStorage.getItem('dsLastVisited')) || { week: 1, day: 1 };
+            
+            // Default to the active day's week/day if lastVisited is somehow invalid
+            selectedWeek = lastVisited.week || Math.floor((activeStudyDay - 1) / 7) + 1;
+            selectedDay = lastVisited.day || (activeStudyDay - 1) % 7 + 1;
+
+            updateUI();
+            loadVantaEffects();
+            createBlossoms();
+        };
+
+    </script>
+</body>
+</html>
