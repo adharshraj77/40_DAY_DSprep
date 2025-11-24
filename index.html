@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Metadata from layout.tsx -->
     <title>30-Day Data Science Interview Prep</title>
     <meta name="description" content="Comprehensive interview preparation with AI coaching, structured curriculum, and daily progress tracking">
     
-    <!-- Favicon (using lucide as a placeholder) -->
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
     
     <!-- Lucide Icons -->
@@ -22,7 +21,7 @@
         @import url('https://assets.vercel.com/font/geist/font-sans.css');
         @import url('https://assets.vercel.com/font/geist/font-mono.css');
 
-        /* --- NEW CUSTOM STYLESHEET (Replaces Tailwind) --- */
+        /* --- CUSTOM STYLESHEET --- */
 
         :root {
             --font-sans: 'Geist', sans-serif;
@@ -126,40 +125,33 @@
             width: 100%;
         }
 
-        .max-w-3xl {
-            max-width: 48rem;
-            margin: 0 auto;
-        }
-
         .relative { position: relative; }
         .z-10 { z-index: 10; }
         .text-center { text-align: center; }
 
-        /* --- Custom Animations (from original) --- */
+        /* --- Custom Animations --- */
         @keyframes blossom-fall {
-          0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.4; }
-          50% { opacity: 0.5; }
-          100% { transform: translateY(100vh) translateX(100px) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.4; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(100vh) translateX(100px) rotate(360deg); opacity: 0; }
         }
         .animate-blossom-fall { animation: blossom-fall linear forwards; }
         
         .animate-fade-in { animation: fadeIn 0.6s ease-in-out forwards; }
         .animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
         .animate-float { animation: float 8s ease-in-out infinite; }
-        .animate-float-delay { animation: float 10s ease-in-out infinite 2s; }
-        .animate-float-slow { animation: float 12s ease-in-out infinite 4s; }
         
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(15px); }
-          to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         /* --- Background Animations --- */
@@ -442,7 +434,6 @@
             margin-bottom: 2rem;
         }
         
-        /* UPDATED: Week Button Styles for Linear Progress Bar */
         .week-btn {
             position: relative;
             padding: 0.75rem;
@@ -484,7 +475,6 @@
             font-size: 1.125rem;
         }
         
-        /* New Week Button Elements */
         .week-btn-percent {
             font-size: 0.8rem;
             z-index: 10;
@@ -938,7 +928,7 @@
             border-radius: 0.75rem;
             border: 2px solid rgba(251, 207, 232, 0.3);
             transition: all 0.3s;
-            box-shadow: var(--shadow-sm); /* Needs definition if not present */
+            box-shadow: var(--shadow-lg);
         }
         .coach-challenge-btn:hover {
             border-color: rgba(244, 114, 182, 0.5);
@@ -1081,8 +1071,8 @@
             color: var(--color-gray-800);
             font-size: 1rem;
         }
-        .coach-feedback-content h1,
-        .coach-feedback-content h2,
+        .coach-feedback-content h1, 
+        .coach-feedback-content h2, 
         .coach-feedback-content h3 {
             font-weight: 700;
             margin-top: 1em;
@@ -1091,7 +1081,7 @@
         .coach-feedback-content h1 { font-size: 1.5em; }
         .coach-feedback-content h2 { font-size: 1.25em; }
         .coach-feedback-content h3 { font-size: 1.1em; }
-        .coach-feedback-content ul,
+        .coach-feedback-content ul, 
         .coach-feedback-content ol {
             margin-left: 1.5rem;
             margin-bottom: 1em;
@@ -1190,8 +1180,8 @@
             align-self: flex-start;
             margin-right: auto;
         }
-        .chat-bubble-model h1,
-        .chat-bubble-model h2,
+        .chat-bubble-model h1, 
+        .chat-bubble-model h2, 
         .chat-bubble-model h3 {
             font-weight: 700;
             margin-top: 1em;
@@ -1200,7 +1190,7 @@
         .chat-bubble-model h1 { font-size: 1.5em; }
         .chat-bubble-model h2 { font-size: 1.25em; }
         .chat-bubble-model h3 { font-size: 1.1em; }
-        .chat-bubble-model ul,
+        .chat-bubble-model ul, 
         .chat-bubble-model ol {
             margin-left: 1.5rem;
             margin-bottom: 1em;
@@ -1373,14 +1363,23 @@
         .info-card-footer-base { font-size: 1rem; }
         .info-card-footer-sm { font-size: 0.875rem; }
 
-        /* --- Donut Chart --- */
-        .donut-chart-bg {
-            stroke: var(--color-gray-200);
+        .reset-btn-container {
+            text-align: center;
+            margin-bottom: 2rem;
         }
-        .donut-chart-fg {
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            transition: stroke-dashoffset 0.5s ease-in-out;
+        .reset-progress-btn {
+            background-color: rgba(239, 68, 68, 0.8);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow-lg);
+        }
+        .reset-progress-btn:hover {
+            background-color: rgba(220, 38, 38, 1);
+            box-shadow: var(--shadow-xl);
         }
 
         /* --- Responsive Styles --- */
@@ -1392,7 +1391,7 @@
             .header-stats-grid { grid-template-columns: repeat(4, 1fr); }
             
             .week-selector-container { padding: 2rem; }
-            #week-selector { grid-template-columns: repeat(5, 1fr); } /* Changed from 6 to 5 */
+            #week-selector { grid-template-columns: repeat(5, 1fr); } 
             .week-btn { font-size: 1.125rem; }
             
             .day-btn { font-size: 1rem; }
@@ -1489,7 +1488,7 @@
                         </h1>
                     </div>
                     <p class="header-subtitle">
-                        Master data science with intensive daily learning, AI coaching, and real-time progress tracking.
+                        Master data science with intensive daily learning, AI coaching, and real-time progress tracking. Starting Today!
                     </p>
                     
                     <div class="header-stats-grid">
@@ -1619,6 +1618,14 @@
     <!-- Footer -->
     <footer id="vanta-footer" class="footer">
         <div class="footer-content">
+            
+            <div class="reset-btn-container">
+                <button onclick="resetChallenge()" class="reset-progress-btn">
+                    <i data-lucide="rotate-ccw" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>
+                    Reset All Progress (Start from Today)
+                </button>
+            </div>
+
             <!-- Stat cards -->
             <div class="footer-stats-grid">
                 <div class="stat-card-footer">
@@ -1668,7 +1675,6 @@
     <script type="module">
         // --- DATA ---
         // Standard Template for typical days (Days 1-6, 8-13, etc.)
-        // Note: Day 7, 14, 21, 28, 30 have unique schedules which will be handled by the 'schedule' override in originalData
         const hourlyScheduleTemplate = [
             { time: '08:00 - 09:00 AM', activity: 'Session 1', type: 'learn', duration: 60, icon: 'book-open', concepts: [] },
             { time: '09:00 - 10:00 AM', activity: 'Session 2', type: 'learn', duration: 60, icon: 'brain', concepts: [] },
@@ -2218,7 +2224,7 @@
                             "SQL Syntax: SELECT, FROM, LIMIT, OFFSET",
                             "Filtering: WHERE, AND, OR, IN, BETWEEN, LIKE",
                             "Sorting: ORDER BY (ASC/DESC), Multiple columns",
-                            "Aggregations: COUNT, SUM, AVG basics",
+                            "Aggregates: COUNT, SUM, AVG basics",
                             "Grouping: GROUP BY logic",
                             "Filtering Groups: HAVING vs WHERE",
                             "Order of Execution (FROM -> WHERE -> GROUP -> SELECT...)",
@@ -2780,30 +2786,6 @@
             return { completed: weekCompleted, total: weekTotal, percentage: Math.round(percentage) };
         }
 
-        function createDonutChart(percentage) {
-            const perc = Math.round(Math.max(0, Math.min(100, percentage)));
-            const offset = 100 - perc;
-            let strokeColor = 'var(--color-gray-300)';
-            if (perc === 100) {
-                strokeColor = 'var(--color-green-500)';
-            } else if (perc > 0) {
-                strokeColor = 'var(--color-purple-500)';
-            }
-            
-            return `
-            <svg class="donut-chart-svg" viewBox="0 0 36 36">
-                <circle class="donut-chart-bg" cx="18" cy="18" r="15.9155" fill="transparent" stroke-width="2.5"></circle>
-                <circle class="donut-chart-fg"
-                    cx="18" cy="18" r="15.9155" fill="transparent"
-                    stroke="${strokeColor}"
-                    stroke-width="2.5"
-                    stroke-dasharray="100"
-                    stroke-dashoffset="${offset}"
-                ></circle>
-            </svg>
-            `;
-        }
-
         function getDayData() {
             const weekData = weeklyPlan[selectedWeek];
             if (!weekData) return null;
@@ -2926,6 +2908,35 @@
             );
             if (response) {
                 showModal(`Explanation: ${concept}`, response);
+            }
+        };
+
+        // --- RESET FUNCTIONALITY ---
+        window.resetChallenge = () => {
+            if (confirm("Are you sure? This will clear all your progress and restart the 30-day challenge from today.")) {
+                // 1. Clear Storage
+                localStorage.removeItem('dsStartDate');
+                localStorage.removeItem('dsConceptsCompleted');
+                localStorage.removeItem('dsChatHistory');
+                localStorage.removeItem('dsLastVisited');
+
+                // 2. Reset Internal State
+                completedConcepts = {};
+                chatHistory = [];
+                
+                // 3. Set New Start Date
+                const startDate = new Date().toISOString();
+                localStorage.setItem('dsStartDate', startDate);
+                
+                // 4. Reset Active Day
+                activeStudyDay = 1;
+                selectedWeek = 1;
+                selectedDay = 1;
+
+                // 5. Refresh UI
+                resetTabState();
+                updateUI();
+                alert("Challenge Reset! Good luck on your new start!");
             }
         };
 
@@ -3374,7 +3385,7 @@
         async function callGemini(userPrompt, systemPrompt, maxRetries = 3) {
             setIsLoading(true);
             
-            const apiKey = "AIzaSyDpiPeqrjhs5B3KXVB8xeEkMUTyz6GA_t4"; 
+            const apiKey = ""; 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             const payload = {
